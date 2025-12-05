@@ -1,6 +1,7 @@
 module org.example.digitalisidomero {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
 
 
     opens org.example.digitalisidomero to javafx.fxml;
