@@ -1,9 +1,9 @@
-package org.example.digitalisidomero;
+package org.example.digitalisidomero.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class MainController {
     @FXML
     private Label welcomeText;
 
