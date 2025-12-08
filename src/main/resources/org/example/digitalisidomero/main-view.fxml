@@ -1,16 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.digitalisidomero.ui.MainController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.digitalisidomero.ui.MainController"
+      spacing="20" style="-fx-background-color: #ecf0f1; -fx-padding: 20;">
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <!-- Fejléc -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+        <Label text="Digitális Időmérő" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Label fx:id="statusLabel" text="Állapot: Leállítva ✗"
+               style="-fx-font-size: 14px; -fx-text-fill: #e74c3c; -fx-font-weight: bold;"/>
+    </VBox>
+
+    <!-- Vezérlő gombok -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="startButton" text="▶ Start" onAction="#handleStart"
+                style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
+                prefWidth="120"/>
+        <Button fx:id="pauseButton" text="⏸ Szünet" onAction="#handlePause"
+                style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
+                prefWidth="120" disable="true"/>
+        <Button fx:id="stopButton" text="⏹ Stop" onAction="#handleStop"
+                style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
+                prefWidth="120" disable="true"/>
+    </HBox>
+
+    <!-- Aktuális alkalmazás panel -->
+    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+        <Label text="Jelenlegi alkalmazás" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Separator/>
+
+        <VBox spacing="5">
+            <Label fx:id="currentAppLabel" text="Nincs aktív követés"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+            <Label fx:id="currentAppCategoryLabel" text=""
+                   style="-fx-font-size: 14px;"/>
+        </VBox>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Jelenlegi session:" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
+            <Label fx:id="currentSessionTimeLabel" text=""
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-font-family: monospace;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Mai statisztikák panel -->
+    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+        <Label text="Mai statisztikák" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Separator/>
+
+        <!-- Összes idő -->
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="📊 Összes idő:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" prefWidth="150"/>
+            <Label fx:id="todayTotalLabel" text="0ó 0p"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #3498db;"/>
+        </HBox>
+
+        <!-- Progress bar -->
+        <VBox spacing="5">
+            <Label text="Napi cél (8 óra = 100%)" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+            <ProgressBar fx:id="todayProgressBar" progress="0" prefWidth="500" prefHeight="15"
+                         style="-fx-accent: #2ecc71;"/>
+        </VBox>
+
+        <Separator/>
+
+        <!-- Kategóriák -->
+        <GridPane hgap="20" vgap="10">
+            <!-- Munka -->
+            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                <Label text="💼 Munka:" style="-fx-font-size: 13px; -fx-text-fill: #3498db; -fx-font-weight: bold;" prefWidth="120"/>
+                <Label fx:id="todayWorkLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
+            </HBox>
+
+            <!-- Tanulás -->
+            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <Label text="📚 Tanulás:" style="-fx-font-size: 13px; -fx-text-fill: #2ecc71; -fx-font-weight: bold;" prefWidth="120"/>
+                <Label fx:id="todayStudyLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
+            </HBox>
+
+            <!-- Szórakozás -->
+            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                <Label text="🎮 Szórakozás:" style="-fx-font-size: 13px; -fx-text-fill: #e74c3c; -fx-font-weight: bold;" prefWidth="120"/>
+                <Label fx:id="todayEntertainmentLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
+            </HBox>
+
+            <!-- Közösségi média -->
+            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                <Label text="💬 Közösségi média:" style="-fx-font-size: 13px; -fx-text-fill: #9b59b6; -fx-font-weight: bold;" prefWidth="120"/>
+                <Label fx:id="todaySocialMediaLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
+            </HBox>
+        </GridPane>
+    </VBox>
+
+    <!-- Lábléc -->
+    <HBox alignment="CENTER" style="-fx-padding: 10;">
+        <Label text="© 2025 Digitális Időmérő | v1.0"
+               style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;"/>
+    </HBox>
+
 </VBox>

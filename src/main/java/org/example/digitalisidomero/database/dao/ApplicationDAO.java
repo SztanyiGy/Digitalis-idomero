@@ -15,7 +15,7 @@ public class ApplicationDAO {
         String sql = "INSERT INTO applications (name, display_name, category) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, app.getName());
             pstmt.setString(2, app.getDisplayName());
@@ -24,10 +24,11 @@ public class ApplicationDAO {
             int affectedRows = pstmt.executeUpdate();
 
             if (affectedRows > 0) {
-                // Generált ID lekérése
-                try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        int id = generatedKeys.getInt(1);
+                // SQLite-nál last_insert_rowid() használata
+                try (Statement stmt = conn.createStatement();
+                     ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid()")) {
+                    if (rs.next()) {
+                        int id = rs.getInt(1);
                         app.setId(id);
                         System.out.println("✓ Alkalmazás mentve: " + app.getDisplayName() + " (ID: " + id + ")");
                         return id;
