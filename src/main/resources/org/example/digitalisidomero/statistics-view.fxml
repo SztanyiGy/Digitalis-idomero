@@ -1,14 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.digitalisidomero.ui.StatisticsController"
+      spacing="15" style="-fx-background-color: #ecf0f1; -fx-padding: 20;">
 
-</AnchorPane>
+    <!-- Fejléc -->
+    <VBox spacing="5" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+        <Label text="📊 Részletes statisztikák"
+               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Label fx:id="statusLabel" text="" style="-fx-font-size: 12px;"/>
+    </VBox>
+
+    <!-- Dátumválasztó panel -->
+    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+        <Label text="📅 Dátum:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+        <DatePicker fx:id="datePicker" prefWidth="150"/>
+
+        <Separator orientation="VERTICAL"/>
+
+        <Button fx:id="todayButton" text="Ma" onAction="#handleToday"
+                style="-fx-font-size: 12px; -fx-padding: 6 15; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;"/>
+        <Button fx:id="yesterdayButton" text="Tegnap" onAction="#handleYesterday"
+                style="-fx-font-size: 12px; -fx-padding: 6 15; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;"/>
+        <Button fx:id="thisWeekButton" text="Ez a hét" onAction="#handleThisWeek"
+                style="-fx-font-size: 12px; -fx-padding: 6 15; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="🔄 Frissítés" onAction="#handleRefresh"
+                style="-fx-font-size: 12px; -fx-padding: 6 15; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 5;"/>
+    </HBox>
+
+    <!-- Összesítő panel -->
+    <GridPane hgap="15" vgap="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+        <VBox spacing="5" GridPane.columnIndex="0">
+            <Label text="Kiválasztott dátum" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+            <Label fx:id="selectedDateLabel" text="-"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        </VBox>
+
+        <VBox spacing="5" GridPane.columnIndex="1">
+            <Label text="Összes használati idő" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+            <Label fx:id="totalTimeLabel" text="0ó 0p"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #3498db;"/>
+        </VBox>
+
+        <VBox spacing="5" GridPane.columnIndex="2">
+            <Label text="Session-ök száma" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+            <Label fx:id="sessionCountLabel" text="-"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;"/>
+        </VBox>
+
+        <VBox spacing="5" GridPane.columnIndex="3">
+            <Label text="Átlagos session" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+            <Label fx:id="avgSessionLabel" text="-"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #9b59b6;"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Grafikonok és listák -->
+    <HBox spacing="15" VBox.vgrow="ALWAYS">
+
+        <!-- Bal oldal: Kördiagram + Lista -->
+        <VBox spacing="15" HBox.hgrow="ALWAYS" prefWidth="400">
+
+            <!-- Kategóriánkénti kördiagram -->
+            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                <Label text="📊 Kategóriák szerinti bontás"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Separator/>
+                <PieChart fx:id="categoryPieChart" prefHeight="250" legendVisible="true"/>
+            </VBox>
+
+            <!-- Top alkalmazások lista -->
+            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;" VBox.vgrow="ALWAYS">
+                <Label text="🏆 Top 10 alkalmazás"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                <Separator/>
+                <ListView fx:id="topAppsListView" VBox.vgrow="ALWAYS"
+                          style="-fx-font-family: monospace; -fx-font-size: 12px;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- Jobb oldal: Heti oszlopdiagram -->
+        <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;" HBox.hgrow="ALWAYS">
+            <Label text="📈 Heti áttekintés"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Separator/>
+            <BarChart fx:id="weeklyBarChart" VBox.vgrow="ALWAYS" legendVisible="false">
+                <xAxis>
+                    <CategoryAxis fx:id="weeklyXAxis" label="Nap"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="weeklyYAxis" label="Percek" side="LEFT"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+
+    </HBox>
+
+    <!-- Export panel -->
+    <HBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+        <Label text="📤 Exportálás:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+
+        <Button fx:id="exportDailyButton" text="Napi CSV" onAction="#handleExportDaily"
+                style="-fx-font-size: 12px; -fx-padding: 8 20; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 5;"/>
+
+        <Button fx:id="exportWeeklyButton" text="Heti CSV" onAction="#handleExportWeekly"
+                style="-fx-font-size: 12px; -fx-padding: 8 20; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 5;"/>
+
+        <Button fx:id="exportFullReportButton" text="Teljes riport" onAction="#handleExportFullReport"
+                style="-fx-font-size: 12px; -fx-padding: 8 20; -fx-background-color: #16a085; -fx-text-fill: white; -fx-background-radius: 5;"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="✖ Bezárás" onAction="#handleClose"
+                style="-fx-font-size: 12px; -fx-padding: 8 30; -fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5;"/>
+    </HBox>
+
+</VBox>

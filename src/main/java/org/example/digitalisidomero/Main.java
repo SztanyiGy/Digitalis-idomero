@@ -17,7 +17,7 @@ public class Main extends Application {
 
         // FXML betöltés - ÚJ main-view.fxml
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/org/example/digitalisidomero/main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 700);
+        Scene scene = new Scene(fxmlLoader.load(), 600, 800);
 
         stage.setTitle("Digitális Időmérő - Time Tracker");
         stage.setScene(scene);

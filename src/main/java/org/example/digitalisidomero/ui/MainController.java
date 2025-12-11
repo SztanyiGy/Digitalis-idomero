@@ -4,9 +4,12 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.example.digitalisidomero.model.Application;
 import org.example.digitalisidomero.model.Category;
@@ -118,6 +121,39 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void handleOpenSettings() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/digitalisidomero/settings-view.fxml"));
+            Scene scene = new Scene(loader.load(), 700, 600);
+
+            Stage settingsStage = new Stage();
+            settingsStage.setTitle("Beállítások");
+            settingsStage.setScene(scene);
+            settingsStage.setResizable(false);
+            settingsStage.show();
+
+        } catch (Exception e) {
+            System.err.println("✗ Beállítások ablak megnyitási hiba: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleOpenStatistics() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/digitalisidomero/statistics-view.fxml"));
+            Scene scene = new Scene(loader.load(), 1000, 700);
+
+            Stage statisticsStage = new Stage();
+            statisticsStage.setTitle("Részletes statisztikák");
+            statisticsStage.setScene(scene);
+            statisticsStage.show();
+
+        } catch (Exception e) {
+            System.err.println("✗ Statisztikák ablak megnyitási hiba: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     /**
      * Aktuális alkalmazás megjelenítésének frissítése
      */
