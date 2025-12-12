@@ -3,105 +3,183 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.digitalisidomero.ui.MainController"
-      spacing="20" style="-fx-background-color: #ecf0f1; -fx-padding: 20;">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.digitalisidomero.ui.MainController"
+            style="-fx-background-color: #f5f6fa;">
 
-    <!-- Fejléc -->
-    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
-        <Label text="Digitális Időmérő" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-        <Label fx:id="statusLabel" text="Állapot: Leállítva ✗"
-               style="-fx-font-size: 14px; -fx-text-fill: #e74c3c; -fx-font-weight: bold;"/>
-    </VBox>
+    <!-- BAL OLDALI SIDEBAR (Navigáció) -->
+    <left>
+        <VBox spacing="0" style="-fx-background-color: linear-gradient(to bottom, #667eea 0%, #764ba2 100%); -fx-padding: 0; -fx-pref-width: 100;">
 
-    <!-- Vezérlő gombok -->
-    <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="startButton" text="▶ Start" onAction="#handleStart"
-                style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
-                prefWidth="120"/>
-        <Button fx:id="pauseButton" text="⏸ Szünet" onAction="#handlePause"
-                style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
-                prefWidth="120" disable="true"/>
-        <Button fx:id="stopButton" text="⏹ Stop" onAction="#handleStop"
-                style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;"
-                prefWidth="120" disable="true"/>
-    </HBox>
+            <!-- Logo / Cím felül -->
+            <VBox alignment="CENTER" style="-fx-padding: 30 10 20 10;">
+                <Label text="⏱️" style="-fx-font-size: 40px;"/>
+                <Label text="Time" style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Label text="Tracker" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8);"/>
+            </VBox>
 
-    <!-- Aktuális alkalmazás panel -->
-    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
-        <Label text="Jelenlegi alkalmazás" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-        <Separator/>
+            <Separator style="-fx-background-color: rgba(255,255,255,0.2);"/>
 
-        <VBox spacing="5">
-            <Label fx:id="currentAppLabel" text="Nincs aktív követés"
-                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
-            <Label fx:id="currentAppCategoryLabel" text=""
-                   style="-fx-font-size: 14px;"/>
+            <!-- Navigációs gombok -->
+            <VBox spacing="5" style="-fx-padding: 20 10;">
+
+                <!-- Főoldal gomb -->
+                <Button fx:id="navHomeButton" onAction="#showHomePage"
+                        style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 15 10; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: rgba(255,255,255,0.3); -fx-border-width: 2; -fx-border-radius: 10;"
+                        maxWidth="Infinity">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="5">
+                            <Label text="🏠" style="-fx-font-size: 24px;"/>
+                            <Label text="Főoldal" style="-fx-font-size: 11px; -fx-text-fill: white; -fx-font-weight: 600;"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Statisztika gomb -->
+                <Button fx:id="navStatsButton" onAction="#showStatisticsPage"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 15 10; -fx-background-radius: 10; -fx-cursor: hand;"
+                        maxWidth="Infinity">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="5">
+                            <Label text="📊" style="-fx-font-size: 24px;"/>
+                            <Label text="Statisztika" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.9);"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <!-- Beállítások gomb -->
+                <Button fx:id="navSettingsButton" onAction="#showSettingsPage"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 15 10; -fx-background-radius: 10; -fx-cursor: hand;"
+                        maxWidth="Infinity">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="5">
+                            <Label text="⚙️" style="-fx-font-size: 24px;"/>
+                            <Label text="Beállítások" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.9);"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+            </VBox>
+
+            <!-- Spacer (lenyomja a lábléc részt) -->
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Állapot lábléc -->
+            <VBox alignment="CENTER" style="-fx-padding: 20 10 30 10;">
+                <Label fx:id="statusLabel" text="Leállítva ✗"
+                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: 600;"/>
+            </VBox>
+
         </VBox>
+    </left>
 
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Jelenlegi session:" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
-            <Label fx:id="currentSessionTimeLabel" text=""
-                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-font-family: monospace;"/>
-        </HBox>
-    </VBox>
+    <!-- JOBB OLDALI TARTALOM TERÜLET -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-padding: 25;">
 
-    <!-- Mai statisztikák panel -->
-    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
-        <Label text="Mai statisztikák" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-        <Separator/>
+            <!-- FŐOLDAL VIEW (default) -->
+            <VBox fx:id="homeView" spacing="20" style="-fx-background-color: transparent;">
 
-        <!-- Összes idő -->
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="📊 Összes idő:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" prefWidth="150"/>
-            <Label fx:id="todayTotalLabel" text="0ó 0p"
-                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #3498db;"/>
-        </HBox>
+                <!-- Fejléc -->
+                <VBox spacing="5" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="Digitális Időmérő" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Label text="Kövesse nyomon digitális eszközhasználatát" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
 
-        <!-- Progress bar -->
-        <VBox spacing="5">
-            <Label text="Napi cél (8 óra = 100%)" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
-            <ProgressBar fx:id="todayProgressBar" progress="0" prefWidth="500" prefHeight="15"
-                         style="-fx-accent: #2ecc71;"/>
-        </VBox>
+                <!-- Vezérlő gombok -->
+                <HBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Button fx:id="startButton" text="▶  Start" onAction="#handleStart"
+                            style="-fx-font-size: 15px; -fx-padding: 15 30; -fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold;"
+                            prefWidth="150"/>
+                    <Button fx:id="pauseButton" text="⏸  Szünet" onAction="#handlePause"
+                            style="-fx-font-size: 15px; -fx-padding: 15 30; -fx-background-color: #f59e0b; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold;"
+                            prefWidth="150" disable="true"/>
+                    <Button fx:id="stopButton" text="⏹  Stop" onAction="#handleStop"
+                            style="-fx-font-size: 15px; -fx-padding: 15 30; -fx-background-color: #ef4444; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold;"
+                            prefWidth="150" disable="true"/>
+                </HBox>
 
-        <Separator/>
+                <!-- Aktuális alkalmazás -->
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="🖥️ Jelenlegi alkalmazás" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Separator/>
 
-        <!-- Kategóriák -->
-        <GridPane hgap="20" vgap="10">
-            <!-- Munka -->
-            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="0">
-                <Label text="💼 Munka:" style="-fx-font-size: 13px; -fx-text-fill: #3498db; -fx-font-weight: bold;" prefWidth="120"/>
-                <Label fx:id="todayWorkLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
-            </HBox>
+                    <VBox spacing="8">
+                        <Label fx:id="currentAppLabel" text="Nincs aktív követés"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #374151;"/>
+                        <Label fx:id="currentAppCategoryLabel" text=""
+                               style="-fx-font-size: 14px; -fx-text-fill: #6b7280;"/>
+                    </VBox>
 
-            <!-- Tanulás -->
-            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                <Label text="📚 Tanulás:" style="-fx-font-size: 13px; -fx-text-fill: #2ecc71; -fx-font-weight: bold;" prefWidth="120"/>
-                <Label fx:id="todayStudyLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
-            </HBox>
+                    <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-background-color: #f0fdf4; -fx-padding: 15; -fx-background-radius: 8;">
+                        <Label text="⏱️" style="-fx-font-size: 28px;"/>
+                        <VBox spacing="2">
+                            <Label text="Session idő" style="-fx-font-size: 11px; -fx-text-fill: #15803d; -fx-font-weight: 600;"/>
+                            <Label fx:id="currentSessionTimeLabel" text="00:00:00"
+                                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #10b981; -fx-font-family: 'Consolas', monospace;"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
 
-            <!-- Szórakozás -->
-            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0">
-                <Label text="🎮 Szórakozás:" style="-fx-font-size: 13px; -fx-text-fill: #e74c3c; -fx-font-weight: bold;" prefWidth="120"/>
-                <Label fx:id="todayEntertainmentLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
-            </HBox>
+                <!-- Mai gyors statisztika -->
+                <HBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <VBox spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color: #eff6ff; -fx-padding: 20; -fx-background-radius: 10;">
+                        <Label text="📊" style="-fx-font-size: 32px;"/>
+                        <Label text="Összes idő ma" style="-fx-font-size: 11px; -fx-text-fill: #1e40af; -fx-font-weight: 600;"/>
+                        <Label fx:id="todayTotalLabel" text="..."
+                               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1e3a8a;"/>
+                    </VBox>
 
-            <!-- Közösségi média -->
-            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
-                <Label text="💬 Közösségi média:" style="-fx-font-size: 13px; -fx-text-fill: #9b59b6; -fx-font-weight: bold;" prefWidth="120"/>
-                <Label fx:id="todaySocialMediaLabel" text="0ó 0p" style="-fx-font-size: 13px; -fx-text-fill: #2c3e50;"/>
-            </HBox>
-        </GridPane>
-    </VBox>
+                    <VBox spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color: #f0fdf4; -fx-padding: 20; -fx-background-radius: 10;">
+                        <Label text="💼" style="-fx-font-size: 32px;"/>
+                        <Label text="Munka" style="-fx-font-size: 11px; -fx-text-fill: #15803d; -fx-font-weight: 600;"/>
+                        <Label fx:id="todayWorkLabel" text="0ó 0p"
+                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #166534;"/>
+                    </VBox>
 
-    <!-- Lábléc -->
-    <HBox alignment="CENTER" style="-fx-padding: 10;">
-        <Label text="© 2025 Digitális Időmérő | v1.0"
-               style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;"/>
-    </HBox>
+                    <VBox spacing="8" alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color: #fef2f2; -fx-padding: 20; -fx-background-radius: 10;">
+                        <Label text="🎮" style="-fx-font-size: 32px;"/>
+                        <Label text="Szórakozás" style="-fx-font-size: 11px; -fx-text-fill: #b91c1c; -fx-font-weight: 600;"/>
+                        <Label fx:id="todayEntertainmentLabel" text="0ó 0p"
+                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #991b1b;"/>
+                    </VBox>
+                </HBox>
 
-</VBox>
+            </VBox>
+
+            <!-- STATISZTIKA VIEW (hidden by default) -->
+            <VBox fx:id="statisticsView"
+                  visible="false"
+                  managed="false"
+                  style="-fx-background-color: transparent;">
+                <!-- Ide töltődik be dinamikusan a statistics-view.fxml -->
+            </VBox>
+
+            <!-- BEÁLLÍTÁSOK VIEW (hidden by default) -->
+            <VBox fx:id="settingsView" spacing="20" visible="false" managed="false" style="-fx-background-color: transparent;">
+
+                <VBox spacing="5" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="⚙️ Beállítások" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Label text="Személyre szabás és beállítások" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="🎨 Megjelenés" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Separator/>
+                    <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="🔔 Értesítések" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Separator/>
+                    <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+
+            </VBox>
+
+        </StackPane>
+    </center>
+
+</BorderPane>
