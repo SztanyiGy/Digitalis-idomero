@@ -150,14 +150,34 @@
             </VBox>
 
             <!-- STATISZTIKA VIEW (hidden by default) -->
-            <Label fx:id="statisticsView" text="📊 Statisztika nézet (hamarosan)"
-                   style="-fx-font-size: 24px; -fx-text-fill: #7f8c8d;"
-                   visible="false" managed="false"/>
+            <VBox fx:id="statisticsView"
+                  visible="false"
+                  managed="false"
+                  style="-fx-background-color: transparent;">
+                <!-- Ide töltődik be dinamikusan a statistics-view.fxml -->
+            </VBox>
 
             <!-- BEÁLLÍTÁSOK VIEW (hidden by default) -->
-            <Label fx:id="settingsView" text="⚙️ Beállítások nézet (hamarosan)"
-                   style="-fx-font-size: 24px; -fx-text-fill: #7f8c8d;"
-                   visible="false" managed="false"/>
+            <VBox fx:id="settingsView" spacing="20" visible="false" managed="false" style="-fx-background-color: transparent;">
+
+                <VBox spacing="5" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="⚙️ Beállítások" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Label text="Személyre szabás és beállítások" style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="🎨 Megjelenés" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Separator/>
+                    <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+                    <Label text="🔔 Értesítések" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Separator/>
+                    <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                </VBox>
+
+            </VBox>
 
         </StackPane>
     </center>
