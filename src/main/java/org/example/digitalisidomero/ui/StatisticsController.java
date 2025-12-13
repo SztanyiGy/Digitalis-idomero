@@ -1,6 +1,5 @@
 package org.example.digitalisidomero.ui;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
@@ -42,10 +41,15 @@ public class StatisticsController {
     // Top alkalmazások lista
     @FXML private ListView<String> topAppsListView;
 
-    // Export gombok
+    // Export gombok - CSV
     @FXML private Button exportDailyButton;
     @FXML private Button exportWeeklyButton;
     @FXML private Button exportFullReportButton;
+
+    // Export gombok - Excel
+    @FXML private Button exportDailyExcelButton;
+    @FXML private Button exportWeeklyExcelButton;
+    @FXML private Button exportFullReportExcelButton;
 
     @FXML private Label statusLabel;
 
@@ -76,6 +80,8 @@ public class StatisticsController {
         refreshStatistics();
     }
 
+    // ========== DÁTUM NAVIGÁCIÓ ==========
+
     @FXML
     private void handleToday() {
         selectedDate = LocalDate.now();
@@ -98,6 +104,14 @@ public class StatisticsController {
         showStatus("Heti nézet betöltve", "info");
     }
 
+    @FXML
+    private void handleRefresh() {
+        refreshStatistics();
+        showStatus("✓ Statisztikák frissítve", "success");
+    }
+
+    // ========== STATISZTIKÁK FRISSÍTÉSE ==========
+
     private void refreshStatistics() {
         refreshSummaryLabels();
         refreshCategoryPieChart();
@@ -112,7 +126,7 @@ public class StatisticsController {
         long totalSeconds = statisticsService.getTotalSecondsByDate(selectedDate);
         totalTimeLabel.setText(TimeFormatter.formatDuration(totalSeconds));
 
-        // Session szám (itt nem tudjuk közvetlenül, de hozzáadhatnánk a service-hez)
+        // Session szám (később bővíthető)
         sessionCountLabel.setText("-");
         avgSessionLabel.setText("-");
     }
@@ -136,7 +150,6 @@ public class StatisticsController {
             }
         }
 
-        // Szín beállítása (CSS-ben kellene, de így is működik)
         categoryPieChart.setLegendVisible(true);
     }
 
@@ -189,11 +202,13 @@ public class StatisticsController {
         }
     }
 
+    // ========== CSV EXPORTOK ==========
+
     @FXML
     private void handleExportDaily() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Napi riport exportálása");
-        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("daily", selectedDate));
+        fileChooser.setTitle("Napi riport exportálása CSV formátumban");
+        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("daily", selectedDate, "csv"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("CSV fájl", "*.csv")
         );
@@ -204,7 +219,7 @@ public class StatisticsController {
             boolean success = exportService.exportDayToCSV(selectedDate, file);
 
             if (success) {
-                showStatus("✓ Napi riport exportálva: " + file.getName(), "success");
+                showStatus("✓ Napi CSV riport exportálva: " + file.getName(), "success");
             } else {
                 showStatus("✗ Export sikertelen!", "error");
             }
@@ -214,10 +229,10 @@ public class StatisticsController {
     @FXML
     private void handleExportWeekly() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Heti riport exportálása");
+        fileChooser.setTitle("Heti riport exportálása CSV formátumban");
 
         LocalDate weekStart = DateUtils.getStartOfWeek(selectedDate);
-        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("weekly", weekStart));
+        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("weekly", weekStart, "csv"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("CSV fájl", "*.csv")
         );
@@ -228,7 +243,7 @@ public class StatisticsController {
             boolean success = exportService.exportWeekToCSV(weekStart, file);
 
             if (success) {
-                showStatus("✓ Heti riport exportálva: " + file.getName(), "success");
+                showStatus("✓ Heti CSV riport exportálva: " + file.getName(), "success");
             } else {
                 showStatus("✗ Export sikertelen!", "error");
             }
@@ -238,8 +253,8 @@ public class StatisticsController {
     @FXML
     private void handleExportFullReport() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Teljes riport exportálása");
-        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("full_report", selectedDate));
+        fileChooser.setTitle("Teljes riport exportálása CSV formátumban");
+        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("full_report", selectedDate, "csv"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("CSV fájl", "*.csv")
         );
@@ -250,7 +265,7 @@ public class StatisticsController {
             boolean success = exportService.exportFullReportToCSV(selectedDate, file);
 
             if (success) {
-                showStatus("✓ Teljes riport exportálva: " + file.getName(), "success");
+                showStatus("✓ Teljes CSV riport exportálva: " + file.getName(), "success");
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Export sikeres");
@@ -263,16 +278,88 @@ public class StatisticsController {
         }
     }
 
+    // ========== EXCEL EXPORTOK ==========
+
     @FXML
-    private void handleRefresh() {
-        refreshStatistics();
-        showStatus("✓ Statisztikák frissítve", "success");
+    private void handleExportDailyExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Napi riport exportálása Excel formátumban");
+        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("daily", selectedDate, "xlsx"));
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel fájl (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(getStage());
+
+        if (file != null) {
+            boolean success = exportService.exportDayToExcel(selectedDate, file);
+
+            if (success) {
+                showStatus("✓ Napi Excel riport exportálva: " + file.getName(), "success");
+            } else {
+                showStatus("✗ Export sikertelen!", "error");
+            }
+        }
     }
 
     @FXML
-    private void handleClose() {
-        getStage().close();
+    private void handleExportWeeklyExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Heti riport exportálása Excel formátumban");
+
+        LocalDate weekStart = DateUtils.getStartOfWeek(selectedDate);
+        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("weekly", weekStart, "xlsx"));
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel fájl (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(getStage());
+
+        if (file != null) {
+            boolean success = exportService.exportWeekToExcel(weekStart, file);
+
+            if (success) {
+                showStatus("✓ Heti Excel riport exportálva: " + file.getName(), "success");
+            } else {
+                showStatus("✗ Export sikertelen!", "error");
+            }
+        }
     }
+
+    @FXML
+    private void handleExportFullReportExcel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Teljes riport exportálása Excel formátumban");
+        fileChooser.setInitialFileName(ExportService.generateDefaultFilename("full_report", selectedDate, "xlsx"));
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel fájl (*.xlsx)", "*.xlsx")
+        );
+
+        File file = fileChooser.showSaveDialog(getStage());
+
+        if (file != null) {
+            boolean success = exportService.exportFullReportToExcel(selectedDate, file);
+
+            if (success) {
+                showStatus("✓ Teljes Excel riport exportálva: " + file.getName(), "success");
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export sikeres");
+                alert.setHeaderText("A teljes riport sikeresen exportálva Excel formátumban!");
+                alert.setContentText("Fájl: " + file.getAbsolutePath() +
+                        "\n\nA riport 4 munkalapot tartalmaz:" +
+                        "\n- Összefoglaló" +
+                        "\n- Kategóriák" +
+                        "\n- Top alkalmazások" +
+                        "\n- Részletes napló");
+                alert.showAndWait();
+            } else {
+                showStatus("✗ Export sikertelen!", "error");
+            }
+        }
+    }
+
+    // ========== SEGÉD METÓDUSOK ==========
 
     private Stage getStage() {
         return (Stage) statusLabel.getScene().getWindow();

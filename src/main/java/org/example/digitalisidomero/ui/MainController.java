@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.digitalisidomero.model.Application;
@@ -30,6 +31,7 @@ public class MainController {
     @FXML private Button navSettingsButton;
 
     // Nézetek
+    @FXML private ScrollPane homeViewScroll;
     @FXML private VBox homeView;
     @FXML private VBox statisticsView;
     @FXML private VBox settingsView;
@@ -78,8 +80,8 @@ public class MainController {
 
     @FXML
     private void showHomePage() {
-        homeView.setVisible(true);
-        homeView.setManaged(true);
+        homeViewScroll.setVisible(true);
+        homeViewScroll.setManaged(true);
         statisticsView.setVisible(false);
         statisticsView.setManaged(false);
         settingsView.setVisible(false);
@@ -91,8 +93,8 @@ public class MainController {
 
     @FXML
     private void showStatisticsPage() {
-        homeView.setVisible(false);
-        homeView.setManaged(false);
+        homeViewScroll.setVisible(false);
+        homeViewScroll.setManaged(false);
         settingsView.setVisible(false);
         settingsView.setManaged(false);
 
@@ -102,7 +104,8 @@ public class MainController {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/org/example/digitalisidomero/statistics-view.fxml")
                 );
-                VBox statsContent = loader.load();
+                // A statistics-view.fxml gyökér eleme ScrollPane, azt töltjük be
+                ScrollPane statsContent = loader.load();
                 statisticsView.getChildren().add(statsContent);
                 statisticsViewLoaded = true;
 
@@ -126,8 +129,8 @@ public class MainController {
 
     @FXML
     private void showSettingsPage() {
-        homeView.setVisible(false);
-        homeView.setManaged(false);
+        homeViewScroll.setVisible(false);
+        homeViewScroll.setManaged(false);
         statisticsView.setVisible(false);
         statisticsView.setManaged(false);
         settingsView.setVisible(true);
@@ -137,16 +140,15 @@ public class MainController {
     }
 
     private void highlightNavButton(Button activeButton) {
-        // Reset all buttons
-        String inactiveStyle = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 15 10; -fx-background-radius: 10; -fx-cursor: hand;";
-        String activeStyle = "-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 15 10; -fx-background-radius: 10; -fx-cursor: hand; -fx-font-weight: bold; -fx-border-color: rgba(255,255,255,0.3); -fx-border-width: 2; -fx-border-radius: 10;";
-
-        navHomeButton.setStyle(inactiveStyle);
-        navStatsButton.setStyle(inactiveStyle);
-        navSettingsButton.setStyle(inactiveStyle);
+        // Reset all buttons - CSS osztályok használata
+        navHomeButton.getStyleClass().remove("nav-button-active");
+        navStatsButton.getStyleClass().remove("nav-button-active");
+        navSettingsButton.getStyleClass().remove("nav-button-active");
 
         // Highlight active
-        activeButton.setStyle(activeStyle);
+        if (!activeButton.getStyleClass().contains("nav-button-active")) {
+            activeButton.getStyleClass().add("nav-button-active");
+        }
     }
 
     @FXML

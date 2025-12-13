@@ -1,0 +1,234 @@
+/* ===== GLOBÁLIS STÍLUSOK ===== */
+/* Megjegyzés: JavaFX CSS nem támogat :root változókat, így közvetlenül használjuk a színeket */
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);
+    -fx-pref-width: 120px;
+    -fx-padding: 0;
+}
+
+.sidebar-header {
+    -fx-padding: 30 15 25 15;
+    -fx-alignment: center;
+}
+
+.sidebar-logo {
+    -fx-font-size: 48px;
+}
+
+.sidebar-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.sidebar-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-separator {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-padding: 0;
+}
+
+/* ===== NAVIGÁCIÓS GOMBOK ===== */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 18 12;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-pref-width: 100;
+    -fx-max-width: 999999;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-button-active {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-font-weight: bold;
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+}
+
+.nav-button-icon {
+    -fx-font-size: 32px;
+}
+
+.nav-button-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(255, 255, 255, 0.95);
+    -fx-font-weight: 600;
+}
+
+.nav-button-active .nav-button-text {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* ===== STATUS LABEL (SIDEBAR LÁBLÉC) ===== */
+.status-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 12;
+    -fx-background-color: rgba(0, 0, 0, 0.15);
+    -fx-background-radius: 8;
+}
+
+.status-running {
+    -fx-text-fill: #2ecc71;
+}
+
+.status-paused {
+    -fx-text-fill: #f39c12;
+}
+
+.status-stopped {
+    -fx-text-fill: rgba(255, 255, 255, 0.7);
+}
+
+/* ===== CONTENT AREA ===== */
+.content-area {
+    -fx-padding: 30;
+    -fx-background-color: #f5f6fa;
+}
+
+/* ===== KÁRTYÁK (CARDS) ===== */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 12, 0, 0, 4);
+    -fx-padding: 25;
+}
+
+.card-header {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.card-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* ===== VEZÉRLŐ GOMBOK ===== */
+.control-button {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 18 40;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-min-width: 160;
+}
+
+.control-button:hover {
+    -fx-opacity: 0.9;
+}
+
+.control-button:disabled {
+    -fx-opacity: 0.5;
+}
+
+.btn-start {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+}
+
+.btn-pause {
+    -fx-background-color: #f59e0b;
+    -fx-text-fill: white;
+}
+
+.btn-stop {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+}
+
+/* ===== JELENLEGI ALKALMAZÁS ===== */
+.current-app-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+}
+
+.current-app-category {
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+}
+
+.session-time-container {
+    -fx-background-color: #f0fdf4;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+}
+
+.session-time-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #15803d;
+    -fx-font-weight: 600;
+}
+
+.session-time-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #10b981;
+    -fx-font-family: 'Consolas', 'Monaco', monospace;
+}
+
+/* ===== STATISZTIKA KÁRTYÁK ===== */
+.stat-card {
+    -fx-padding: 25;
+    -fx-background-radius: 12;
+    -fx-alignment: center;
+}
+
+.stat-card-blue {
+    -fx-background-color: #eff6ff;
+}
+
+.stat-card-green {
+    -fx-background-color: #f0fdf4;
+}
+
+.stat-card-red {
+    -fx-background-color: #fef2f2;
+}
+
+.stat-card-yellow {
+    -fx-background-color: #fef3c7;
+}
+
+.stat-card-icon {
+    -fx-font-size: 40px;
+}
+
+.stat-card-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.stat-card-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* ===== RESZPONZÍV LAYOUT ===== */
+.responsive-container {
+    -fx-spacing: 20;
+}
+
+/* ===== SCROLLPANE ===== */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
