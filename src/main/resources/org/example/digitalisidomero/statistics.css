@@ -43,11 +43,12 @@
 
 .date-button {
     -fx-font-size: 13px;
-    -fx-padding: 8 18;
+    -fx-padding: 10 20;
     -fx-background-color: #3498db;
     -fx-text-fill: white;
     -fx-background-radius: 8;
     -fx-cursor: hand;
+    -fx-font-weight: 600;
 }
 
 .date-button:hover {
@@ -55,8 +56,8 @@
 }
 
 .refresh-button {
-    -fx-font-size: 13px;
-    -fx-padding: 8 18;
+    -fx-font-size: 16px;
+    -fx-padding: 10 12;
     -fx-background-color: #2ecc71;
     -fx-text-fill: white;
     -fx-background-radius: 8;
@@ -81,7 +82,6 @@
     -fx-font-size: 11px;
     -fx-text-fill: #7f8c8d;
     -fx-font-weight: 600;
-    -fx-text-transform: uppercase;
 }
 
 .summary-value {
@@ -101,7 +101,7 @@
     -fx-text-fill: #9b59b6;
 }
 
-/* Grafikon kártyák - Egyszerűsített */
+/* Grafikon kártyák */
 .chart-card {
     -fx-background-color: white;
     -fx-padding: 20;
@@ -124,49 +124,56 @@
 .top-apps-list {
     -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
     -fx-font-size: 13px;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.list-cell {
-    -fx-background-color: transparent;
-    -fx-padding: 8 12;
-}
-
-.list-cell:hover {
     -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
-.list-cell:selected {
+.top-apps-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 10 15;
+}
+
+.top-apps-list .list-cell:hover {
     -fx-background-color: #e3f2fd;
 }
 
-/* Export panel */
+.top-apps-list .list-cell:selected {
+    -fx-background-color: #bbdefb;
+    -fx-text-fill: #1976d2;
+}
+
+/* Export panel - JAVÍTOTT */
 .export-panel {
     -fx-background-color: white;
-    -fx-padding: 18;
+    -fx-padding: 25;
     -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
-    -fx-spacing: 15;
+    -fx-spacing: 18;
 }
 
 .export-label {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
 }
 
 .export-button {
-    -fx-font-size: 13px;
-    -fx-padding: 10 22;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 20;
     -fx-background-color: #27ae60;
     -fx-text-fill: white;
     -fx-background-radius: 8;
     -fx-cursor: hand;
+    -fx-border-color: transparent;
 }
 
 .export-button:hover {
     -fx-background-color: #229954;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
 }
 
 .export-button-full {
@@ -180,7 +187,6 @@
 /* ScrollPane javítás */
 .scroll-pane {
     -fx-background-color: transparent;
-    -fx-background: transparent;
 }
 
 .scroll-pane > .viewport {
@@ -200,13 +206,18 @@
     -fx-background-color: transparent;
 }
 
-/* Reszponzivitás */
-@media (max-width: 1200px) {
-    .summary-grid {
-        -fx-hgap: 15;
-    }
+/* DatePicker stílus */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
 
-    .chart-card {
-        -fx-padding: 15;
-    }
+.date-picker .text-field {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
 }

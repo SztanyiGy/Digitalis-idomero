@@ -32,7 +32,7 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <Button text="🔄" onAction="#handleRefresh" styleClass="refresh-button"/>
+            <Button text="🔄" onAction="#handleRefresh" styleClass="refresh-button" style="-fx-min-width: 40; -fx-pref-width: 40;"/>
         </HBox>
 
         <!-- Összesítő -->
@@ -98,39 +98,57 @@
             <ListView fx:id="topAppsListView" prefHeight="200" styleClass="top-apps-list"/>
         </VBox>
 
-        <!-- Export -->
-        <VBox spacing="15" styleClass="export-panel">
-            <Label text="📤 Exportálás" styleClass="export-label"/>
+        <!-- Export panel - JAVÍTOTT -->
+        <VBox spacing="18" styleClass="export-panel">
+            <Label text="📤 Exportálás" styleClass="export-label" style="-fx-font-size: 16px;"/>
 
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                    <Label text="Napi riport" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+            <GridPane hgap="20" vgap="15">
+
+                <!-- Napi riport -->
+                <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="📄 Napi riport" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;"/>
                     <HBox spacing="10">
-                        <Button fx:id="exportDailyButton" text="📄 CSV" onAction="#handleExportDaily" styleClass="export-button"/>
-                        <Button fx:id="exportDailyExcelButton" text="📊 Excel" onAction="#handleExportDailyExcel" styleClass="export-button"/>
+                        <Button fx:id="exportDailyButton" text="CSV" onAction="#handleExportDaily"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                        <Button fx:id="exportDailyExcelButton" text="Excel" onAction="#handleExportDailyExcel"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
                     </HBox>
                 </VBox>
 
-                <Separator orientation="VERTICAL"/>
-
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                    <Label text="Heti riport" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                <!-- Heti riport -->
+                <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="📅 Heti riport" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;"/>
                     <HBox spacing="10">
-                        <Button fx:id="exportWeeklyButton" text="📄 CSV" onAction="#handleExportWeekly" styleClass="export-button"/>
-                        <Button fx:id="exportWeeklyExcelButton" text="📊 Excel" onAction="#handleExportWeeklyExcel" styleClass="export-button"/>
+                        <Button fx:id="exportWeeklyButton" text="CSV" onAction="#handleExportWeekly"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                        <Button fx:id="exportWeeklyExcelButton" text="Excel" onAction="#handleExportWeeklyExcel"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
                     </HBox>
                 </VBox>
 
-                <Separator orientation="VERTICAL"/>
-
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                    <Label text="Teljes riport" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                <!-- Teljes riport -->
+                <VBox spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <Label text="📊 Teljes riport" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;"/>
                     <HBox spacing="10">
-                        <Button fx:id="exportFullReportButton" text="📄 CSV" onAction="#handleExportFullReport" styleClass="export-button, export-button-full"/>
-                        <Button fx:id="exportFullReportExcelButton" text="📊 Excel" onAction="#handleExportFullReportExcel" styleClass="export-button, export-button-full"/>
+                        <Button fx:id="exportFullReportButton" text="CSV" onAction="#handleExportFullReport"
+                                styleClass="export-button, export-button-full"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                        <Button fx:id="exportFullReportExcelButton" text="Excel" onAction="#handleExportFullReportExcel"
+                                styleClass="export-button, export-button-full"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
                     </HBox>
                 </VBox>
-            </HBox>
+
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                    <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                    <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                </columnConstraints>
+            </GridPane>
         </VBox>
 
     </VBox>
