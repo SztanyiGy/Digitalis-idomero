@@ -1,14 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.digitalisidomero.ui.SettingsController"
+      spacing="15" style="-fx-background-color: #ecf0f1; -fx-padding: 20;">
 
-</AnchorPane>
+    <!-- Fejléc -->
+    <VBox spacing="5" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+        <Label text="⚙️ Beállítások" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Label fx:id="statusLabel" text="" style="-fx-font-size: 12px;"/>
+    </VBox>
+
+    <!-- TabPane -->
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- Általános beállítások tab -->
+        <Tab text="Általános">
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                <VBox spacing="20" style="-fx-padding: 20;">
+
+                    <!-- Figyelési beállítások -->
+                    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                        <Label text="📊 Figyelési beállítások"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                        <Separator/>
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Inaktivitási határidő (perc):" prefWidth="200"/>
+                            <Spinner fx:id="idleThresholdSpinner" prefWidth="100"/>
+                            <Label text="Ennyi perc inaktivitás után az időmérés szünetel"
+                                   style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+                        </HBox>
+
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Napi cél (óra):" prefWidth="200"/>
+                            <Spinner fx:id="dailyTargetSpinner" prefWidth="100"/>
+                            <Label text="A progress bar ehhez viszonyít (8 óra = 100%)"
+                                   style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- UI beállítások -->
+                    <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                        <Label text="🖥️ Felhasználói felület"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                        <Separator/>
+
+                        <CheckBox fx:id="autostartCheckBox"
+                                  text="Automatikus indítás Windows indításakor"/>
+
+                        <CheckBox fx:id="minimizeToTrayCheckBox"
+                                  text="Minimalizálás a tálcára (system tray)"
+                                  selected="true"/>
+
+                        <CheckBox fx:id="notificationsCheckBox"
+                                  text="Értesítések megjelenítése"
+                                  selected="true"/>
+                    </VBox>
+
+                    <!-- Gombok -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button text="💾 Beállítások mentése" onAction="#handleSaveSettings"
+                                style="-fx-font-size: 13px; -fx-padding: 10 20; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 5;"
+                                prefWidth="180"/>
+                        <Button text="🔄 Alapértelmezett" onAction="#handleResetSettings"
+                                style="-fx-font-size: 13px; -fx-padding: 10 20; -fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5;"
+                                prefWidth="150"/>
+                    </HBox>
+
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- Kategória kezelés tab -->
+        <Tab text="Kategóriák">
+            <VBox spacing="15" style="-fx-padding: 20;">
+
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                    <Label text="📁 Alkalmazások kategorizálása"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Label text="Az alábbi listában módosíthatod az egyes alkalmazások kategóriáját."
+                           style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+                    <Separator/>
+
+                    <!-- Alkalmazások táblázata -->
+                    <TableView fx:id="applicationsTable" prefHeight="300">
+                        <columns>
+                            <TableColumn fx:id="appNameColumn" text="Folyamat neve" prefWidth="150"/>
+                            <TableColumn fx:id="appDisplayNameColumn" text="Megjelenített név" prefWidth="200"/>
+                            <TableColumn fx:id="appCategoryColumn" text="Kategória" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- Kategória módosítás panel -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10;">
+                    <Label text="✏️ Kiválasztott alkalmazás módosítása"
+                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Separator/>
+
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Új kategória:" prefWidth="100"/>
+                        <ComboBox fx:id="categoryComboBox" prefWidth="200"/>
+                        <Button fx:id="updateCategoryButton" text="✓ Kategória módosítása"
+                                onAction="#handleUpdateCategory" disable="true"
+                                style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;"/>
+                        <Button fx:id="deleteAppButton" text="🗑️ Alkalmazás törlése"
+                                onAction="#handleDeleteApplication" disable="true"
+                                style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5;"/>
+                    </HBox>
+
+                    <Label text="💡 Tipp: Kattints egy sorra a táblázatban a módosításhoz!"
+                           style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;"/>
+                </VBox>
+
+            </VBox>
+        </Tab>
+
+        <!-- Info tab -->
+        <Tab text="Információ">
+            <VBox spacing="15" style="-fx-padding: 20; -fx-alignment: CENTER;">
+
+                <VBox spacing="10" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10;">
+                    <Label text="⏱️ Digitális Időmérő"
+                           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Label text="Verzió 1.0.0"
+                           style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                    <Separator prefWidth="300"/>
+
+                    <VBox spacing="5" alignment="CENTER">
+                        <Label text="🎓 Szakdolgozat projekt"
+                               style="-fx-font-size: 13px; -fx-text-fill: #34495e;"/>
+                        <Label text="Téma: A digitális eszközök használata és hatásai"
+                               style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;"/>
+                    </VBox>
+
+                    <Separator prefWidth="300"/>
+
+                    <VBox spacing="5" alignment="CENTER">
+                        <Label text="📊 Funkciók:"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #34495e;"/>
+                        <Label text="• Alkalmazás használat figyelése" style="-fx-font-size: 11px;"/>
+                        <Label text="• Időmérés és statisztikák" style="-fx-font-size: 11px;"/>
+                        <Label text="• Kategorizálás és elemzés" style="-fx-font-size: 11px;"/>
+                        <Label text="• Adatok exportálása" style="-fx-font-size: 11px;"/>
+                    </VBox>
+
+                    <Separator prefWidth="300"/>
+
+                    <Label text="© 2025 Digitális Időmérő"
+                           style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;"/>
+                </VBox>
+
+            </VBox>
+        </Tab>
+
+    </TabPane>
+
+    <!-- Bezárás gomb -->
+    <HBox alignment="CENTER" style="-fx-padding: 10;">
+        <Button text="✖ Bezárás" onAction="#handleClose"
+                style="-fx-font-size: 13px; -fx-padding: 8 30; -fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 5;"
+                prefWidth="120"/>
+    </HBox>
+
+</VBox>

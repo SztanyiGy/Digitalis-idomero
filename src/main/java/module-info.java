@@ -4,6 +4,8 @@ module org.example.digitalisidomero {
     requires java.sql;
     requires com.sun.jna;
     requires com.sun.jna.platform;
+    requires org.apache.poi.poi;
+    requires org.apache.poi.ooxml;
 
 
     opens org.example.digitalisidomero to javafx.fxml;
