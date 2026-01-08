@@ -179,29 +179,19 @@ public class StatisticsService {
 
     /**
      * Formázott idő string (óra:perc formátumban)
+     * @deprecated Használd helyette: TimeFormatter.formatDuration()
      */
+    @Deprecated
     public static String formatDuration(long seconds) {
-        long hours = seconds / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long secs = seconds % 60;
-
-        if (hours > 0) {
-            return String.format("%dó %dp", hours, minutes);
-        } else if (minutes > 0) {
-            return String.format("%dp %dmp", minutes, secs);
-        } else {
-            return String.format("%dmp", secs);
-        }
+        return org.example.digitalisidomero.util.TimeFormatter.formatDuration(seconds);
     }
 
     /**
      * Formázott idő string (részletes: óra:perc:másodperc)
+     * @deprecated Használd helyette: TimeFormatter.formatDurationDetailed()
      */
+    @Deprecated
     public static String formatDurationDetailed(long seconds) {
-        long hours = seconds / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long secs = seconds % 60;
-
-        return String.format("%02d:%02d:%02d", hours, minutes, secs);
+        return org.example.digitalisidomero.util.TimeFormatter.formatDurationDetailed(seconds);
     }
 }
