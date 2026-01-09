@@ -171,4 +171,8 @@ public class ApplicationDAO {
 
         return new Application(id, name, displayName, category);
     }
+
+    public Application findByProcessName(String processName) {
+        return null;
+    }
 }
