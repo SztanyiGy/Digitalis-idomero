@@ -1,271 +1,337 @@
 package org.example.digitalisidomero.ui;
 
-import javafx.collections.FXCollections;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.example.digitalisidomero.config.AppConfig;
-import org.example.digitalisidomero.database.dao.ApplicationDAO;
-import org.example.digitalisidomero.model.Application;
-import org.example.digitalisidomero.model.Category;
-import org.example.digitalisidomero.service.CategoryService;
+import javafx.util.Duration;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class SettingsController {
 
-    // Általános beállítások
-    @FXML private Spinner<Integer> idleThresholdSpinner;
-    @FXML private Spinner<Integer> dailyTargetSpinner;
-    @FXML private CheckBox autostartCheckBox;
-    @FXML private CheckBox notificationsCheckBox;
-    @FXML private CheckBox minimizeToTrayCheckBox;
+    @FXML private Spinner<Integer> hoursSpinner;
+    @FXML private Spinner<Integer> minutesSpinner;
+    @FXML private Spinner<Integer> secondsSpinner;
+    @FXML private Label timerDisplayLabel;
+    @FXML private Button startTimerButton;
+    @FXML private Button pauseTimerButton;
+    @FXML private Button stopTimerButton;
+    @FXML private Label timerStatusLabel;
+    @FXML private Label categoryWarningLabel;
 
-    // Alkalmazás kategória kezelés
-    @FXML private TableView<Application> applicationsTable;
-    @FXML private TableColumn<Application, String> appNameColumn;
-    @FXML private TableColumn<Application, String> appDisplayNameColumn;
-    @FXML private TableColumn<Application, String> appCategoryColumn;
+    @FXML private ToggleButton workCategoryToggle;
+    @FXML private ToggleButton studyCategoryToggle;
+    @FXML private ToggleButton entertainmentCategoryToggle;
 
-    @FXML private ComboBox<Category> categoryComboBox;
-    @FXML private Button updateCategoryButton;
-    @FXML private Button deleteAppButton;
+    private Timeline timeline;
+    private int totalSeconds = 0;
+    private int remainingSeconds = 0;
+    private int elapsedSeconds = 0;
+    private boolean isRunning = false;
+    private boolean isPaused = false;
 
-    @FXML private Label statusLabel;
-
-    private ApplicationDAO applicationDAO;
-    private CategoryService categoryService;
-    private AppConfig appConfig;
+    private ToggleGroup categoryToggleGroup;
+    private String selectedCategory = null;
+    private LocalDateTime sessionStartTime;
 
     @FXML
     public void initialize() {
-        applicationDAO = new ApplicationDAO();
-        categoryService = new CategoryService();
-        appConfig = AppConfig.getInstance();
-
-        // Spinner-ek inicializálása
-        initializeSpinners();
-
-        // Táblázat inicializálása
-        initializeTable();
-
-        // Kategória combo box inicializálása
-        initializeCategoryComboBox();
-
-        // Beállítások betöltése
-        loadSettings();
-
-        // Alkalmazások betöltése
-        loadApplications();
-
-        // Táblázat kiválasztás kezelése
-        applicationsTable.getSelectionModel().selectedItemProperty().addListener(
-                (obs, oldSelection, newSelection) -> {
-                    boolean hasSelection = newSelection != null;
-                    updateCategoryButton.setDisable(!hasSelection);
-                    deleteAppButton.setDisable(!hasSelection);
-
-                    if (hasSelection) {
-                        categoryComboBox.setValue(newSelection.getCategory());
-                    }
-                }
-        );
+        setupSpinners();
+        setupCategoryToggleGroup();
+        updateTimerDisplay();
     }
 
-    private void initializeSpinners() {
-        // Inaktivitási határidő (1-60 perc)
-        SpinnerValueFactory<Integer> idleFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 60, 5, 1);
-        idleThresholdSpinner.setValueFactory(idleFactory);
+    private void setupSpinners() {
+        SpinnerValueFactory<Integer> hoursFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0);
+        hoursSpinner.setValueFactory(hoursFactory);
+        hoursSpinner.setEditable(true);
 
-        // Napi cél (1-24 óra)
-        SpinnerValueFactory<Integer> targetFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 24, 8, 1);
-        dailyTargetSpinner.setValueFactory(targetFactory);
+        SpinnerValueFactory<Integer> minutesFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 25);
+        minutesSpinner.setValueFactory(minutesFactory);
+        minutesSpinner.setEditable(true);
+
+        SpinnerValueFactory<Integer> secondsFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0);
+        secondsSpinner.setValueFactory(secondsFactory);
+        secondsSpinner.setEditable(true);
+
+        hoursSpinner.valueProperty().addListener((obs, old, newVal) -> updateTotalSeconds());
+        minutesSpinner.valueProperty().addListener((obs, old, newVal) -> updateTotalSeconds());
+        secondsSpinner.valueProperty().addListener((obs, old, newVal) -> updateTotalSeconds());
     }
 
-    private void initializeTable() {
-        appNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        appDisplayNameColumn.setCellValueFactory(new PropertyValueFactory<>("displayName"));
-        appCategoryColumn.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(
-                        CategoryService.getCategoryIcon(cellData.getValue().getCategory()) + " " +
-                                cellData.getValue().getCategory().getDisplayName()
-                )
-        );
+    private void setupCategoryToggleGroup() {
+        categoryToggleGroup = new ToggleGroup();
+        workCategoryToggle.setToggleGroup(categoryToggleGroup);
+        studyCategoryToggle.setToggleGroup(categoryToggleGroup);
+        entertainmentCategoryToggle.setToggleGroup(categoryToggleGroup);
 
-        // Sor színezése kategória szerint
-        applicationsTable.setRowFactory(tv -> new TableRow<Application>() {
-            @Override
-            protected void updateItem(Application app, boolean empty) {
-                super.updateItem(app, empty);
-                if (app == null || empty) {
-                    setStyle("");
-                } else {
-                    String color = CategoryService.getCategoryColor(app.getCategory());
-                    setStyle("-fx-background-color: " + color + "22;"); // 22 = átlátszóság
-                }
+        // Alapértelmezetten a tanulás legyen kiválasztva
+        studyCategoryToggle.setSelected(true);
+        selectedCategory = "Egyéb"; // Az adatbázisodban lévő kategória név
+
+        categoryToggleGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == workCategoryToggle) {
+                selectedCategory = "Egyéb"; // Vagy "Munka" ha van ilyen kategóriád
+            } else if (newToggle == studyCategoryToggle) {
+                selectedCategory = "Egyéb"; // Tanuláshoz is használhatod az Egyéb-et
+            } else if (newToggle == entertainmentCategoryToggle) {
+                selectedCategory = "Szórakozás";
             }
+            categoryWarningLabel.setVisible(false);
         });
     }
 
-    private void initializeCategoryComboBox() {
-        categoryComboBox.setItems(FXCollections.observableArrayList(Category.values()));
-
-        // Custom cell factory a kategória ikonokkal
-        categoryComboBox.setCellFactory(listView -> new ListCell<Category>() {
-            @Override
-            protected void updateItem(Category category, boolean empty) {
-                super.updateItem(category, empty);
-                if (empty || category == null) {
-                    setText(null);
-                } else {
-                    setText(CategoryService.getCategoryIcon(category) + " " + category.getDisplayName());
-                }
-            }
-        });
-
-        // Button cell (kiválasztott elem megjelenítése)
-        categoryComboBox.setButtonCell(new ListCell<Category>() {
-            @Override
-            protected void updateItem(Category category, boolean empty) {
-                super.updateItem(category, empty);
-                if (empty || category == null) {
-                    setText(null);
-                } else {
-                    setText(CategoryService.getCategoryIcon(category) + " " + category.getDisplayName());
-                }
-            }
-        });
-    }
-
-    private void loadSettings() {
-        idleThresholdSpinner.getValueFactory().setValue(appConfig.getIdleThresholdMinutes());
-        dailyTargetSpinner.getValueFactory().setValue(appConfig.getDailyTargetHours());
-        autostartCheckBox.setSelected(appConfig.isAutostart());
-        notificationsCheckBox.setSelected(appConfig.isShowNotifications());
-        minimizeToTrayCheckBox.setSelected(appConfig.isMinimizeToTray());
-    }
-
-    private void loadApplications() {
-        List<Application> apps = applicationDAO.findAll();
-        applicationsTable.setItems(FXCollections.observableArrayList(apps));
+    private void updateTotalSeconds() {
+        if (!isRunning) {
+            totalSeconds = hoursSpinner.getValue() * 3600 +
+                    minutesSpinner.getValue() * 60 +
+                    secondsSpinner.getValue();
+            remainingSeconds = totalSeconds;
+            updateTimerDisplay();
+        }
     }
 
     @FXML
-    private void handleUpdateCategory() {
-        Application selectedApp = applicationsTable.getSelectionModel().getSelectedItem();
-        Category newCategory = categoryComboBox.getValue();
-
-        if (selectedApp == null) {
-            showStatus("⚠ Válassz ki egy alkalmazást!", "warning");
+    private void handleStartTimer() {
+        if (categoryToggleGroup.getSelectedToggle() == null) {
+            categoryWarningLabel.setText("⚠️ Kérlek válassz kategóriát!");
+            categoryWarningLabel.setVisible(true);
             return;
         }
 
-        if (newCategory == null) {
-            showStatus("⚠ Válassz ki egy kategóriát!", "warning");
+        if (totalSeconds == 0) {
+            showAlert("Hiba", "Kérlek állíts be egy időtartamot!");
             return;
         }
 
-        // Kategória frissítése
-        boolean success = categoryService.updateApplicationCategory(selectedApp.getId(), newCategory);
-
-        if (success) {
-            showStatus("✓ Kategória frissítve: " + selectedApp.getDisplayName(), "success");
-            loadApplications(); // Táblázat frissítése
+        if (isPaused) {
+            resumeTimer();
         } else {
-            showStatus("✗ Kategória frissítése sikertelen!", "error");
+            startTimer();
         }
     }
 
-    @FXML
-    private void handleDeleteApplication() {
-        Application selectedApp = applicationsTable.getSelectionModel().getSelectedItem();
+    private void startTimer() {
+        isRunning = true;
+        isPaused = false;
+        remainingSeconds = totalSeconds;
+        elapsedSeconds = 0;
+        sessionStartTime = LocalDateTime.now();
 
-        if (selectedApp == null) {
-            showStatus("⚠ Válassz ki egy alkalmazást!", "warning");
-            return;
-        }
+        startTimerButton.setDisable(true);
+        pauseTimerButton.setDisable(false);
+        stopTimerButton.setDisable(false);
+        disableControls(true);
 
-        // Megerősítés dialógus
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Alkalmazás törlése");
-        alert.setHeaderText("Biztosan törölni szeretnéd ezt az alkalmazást?");
-        alert.setContentText(selectedApp.getDisplayName() + "\n\n" +
-                "Figyelem! Az alkalmazáshoz tartozó összes session is törlésre kerül!");
+        timerStatusLabel.setText("Futás...");
+        timerStatusLabel.getStyleClass().removeAll("status-stopped", "status-paused");
+        timerStatusLabel.getStyleClass().add("status-running");
 
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                boolean success = applicationDAO.delete(selectedApp.getId());
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            remainingSeconds--;
+            elapsedSeconds++;
+            updateTimerDisplay();
 
-                if (success) {
-                    showStatus("✓ Alkalmazás törölve: " + selectedApp.getDisplayName(), "success");
-                    loadApplications();
-                } else {
-                    showStatus("✗ Alkalmazás törlése sikertelen!", "error");
-                }
+            if (remainingSeconds <= 0) {
+                timerFinished();
             }
-        });
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    private void resumeTimer() {
+        isPaused = false;
+        isRunning = true;
+
+        startTimerButton.setDisable(true);
+        pauseTimerButton.setDisable(false);
+
+        timerStatusLabel.setText("Futás...");
+        timerStatusLabel.getStyleClass().removeAll("status-stopped", "status-paused");
+        timerStatusLabel.getStyleClass().add("status-running");
+
+        timeline.play();
     }
 
     @FXML
-    private void handleSaveSettings() {
-        // Beállítások mentése
-        appConfig.setIdleThresholdMinutes(idleThresholdSpinner.getValue());
-        appConfig.setDailyTargetHours(dailyTargetSpinner.getValue());
-        appConfig.setAutostart(autostartCheckBox.isSelected());
-        appConfig.setShowNotifications(notificationsCheckBox.isSelected());
-        appConfig.setMinimizeToTray(minimizeToTrayCheckBox.isSelected());
+    private void handlePauseTimer() {
+        if (timeline != null && isRunning) {
+            timeline.pause();
+            isPaused = true;
+            isRunning = false;
 
-        appConfig.saveConfig();
+            startTimerButton.setDisable(false);
+            pauseTimerButton.setDisable(true);
 
-        showStatus("✓ Beállítások mentve!", "success");
+            timerStatusLabel.setText("Szüneteltetve");
+            timerStatusLabel.getStyleClass().removeAll("status-running", "status-stopped");
+            timerStatusLabel.getStyleClass().add("status-paused");
+        }
+    }
 
-        // Információs dialógus
+    @FXML
+    private void handleStopTimer() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+
+        // Ha volt futás, mentsük el az időt
+        if (elapsedSeconds > 0) {
+            saveTimerSession();
+        }
+
+        resetTimerState();
+    }
+
+    private void timerFinished() {
+        timeline.stop();
+
+        // Teljes idő mentése
+        saveTimerSession();
+
+        resetTimerState();
+
+        Platform.runLater(this::showTimerFinishedAlert);
+        playNotificationSound();
+    }
+
+    private void saveTimerSession() {
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:time_tracker.db")) {
+            String sql = "INSERT INTO daily_statistics (date, category, total_seconds) VALUES (?, ?, ?) " +
+                    "ON CONFLICT(date, category) DO UPDATE SET total_seconds = total_seconds + ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, LocalDate.now().toString());
+            pstmt.setString(2, selectedCategory);
+            pstmt.setInt(3, elapsedSeconds);
+            pstmt.setInt(4, elapsedSeconds);
+            pstmt.executeUpdate();
+
+            System.out.println("✓ Időzítő munkamenet mentve: " + elapsedSeconds + " másodperc a(z) " + selectedCategory + " kategóriába");
+
+        } catch (Exception e) {
+            System.err.println("Hiba az időzítő munkamenet mentésekor: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void resetTimerState() {
+        isRunning = false;
+        isPaused = false;
+        elapsedSeconds = 0;
+        remainingSeconds = totalSeconds;
+
+        startTimerButton.setDisable(false);
+        pauseTimerButton.setDisable(true);
+        stopTimerButton.setDisable(true);
+        disableControls(false);
+
+        timerStatusLabel.setText("Leállítva");
+        timerStatusLabel.getStyleClass().removeAll("status-running", "status-paused");
+        timerStatusLabel.getStyleClass().add("status-stopped");
+
+        updateTimerDisplay();
+    }
+
+    private void updateTimerDisplay() {
+        int hours = remainingSeconds / 3600;
+        int minutes = (remainingSeconds % 3600) / 60;
+        int seconds = remainingSeconds % 60;
+
+        timerDisplayLabel.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+    }
+
+    private void showTimerFinishedAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Beállítások mentve");
-        alert.setHeaderText("A beállítások sikeresen mentve!");
-        alert.setContentText("Néhány beállítás csak újraindítás után lép érvénybe.");
+        alert.setTitle("⏰ Időzítő lejárt");
+        alert.setHeaderText("Időzítő befejezve!");
+        alert.setContentText(String.format(
+                "A beállított időtartam (%s) letelt.\n\n" +
+                        "Kategória: %s\n" +
+                        "Eltelt idő: %s\n\n" +
+                        "Az idő sikeresen mentésre került a statisztikáidba.",
+                formatTime(totalSeconds),
+                getCategoryDisplayName(),
+                formatTime(totalSeconds)
+        ));
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.setAlwaysOnTop(true);
+        stage.toFront();
+
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleResetSettings() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Beállítások visszaállítása");
-        alert.setHeaderText("Biztosan visszaállítod az alapértelmezett beállításokat?");
-
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                // Alapértelmezett értékek
-                idleThresholdSpinner.getValueFactory().setValue(5);
-                dailyTargetSpinner.getValueFactory().setValue(8);
-                autostartCheckBox.setSelected(false);
-                notificationsCheckBox.setSelected(true);
-                minimizeToTrayCheckBox.setSelected(true);
-
-                showStatus("✓ Beállítások visszaállítva!", "success");
-            }
-        });
+    private String getCategoryDisplayName() {
+        if (workCategoryToggle.isSelected()) return "💼 Munka";
+        if (studyCategoryToggle.isSelected()) return "📚 Tanulás";
+        if (entertainmentCategoryToggle.isSelected()) return "🎮 Szórakozás";
+        return "Egyéb";
     }
 
-    @FXML
-    private void handleClose() {
-        Stage stage = (Stage) statusLabel.getScene().getWindow();
-        stage.close();
+    private String formatTime(int totalSecs) {
+        int h = totalSecs / 3600;
+        int m = (totalSecs % 3600) / 60;
+        int s = totalSecs % 60;
+
+        if (h > 0) {
+            return String.format("%d óra %d perc", h, m);
+        } else if (m > 0) {
+            return String.format("%d perc %d másodperc", m, s);
+        } else {
+            return String.format("%d másodperc", s);
+        }
     }
 
-    private void showStatus(String message, String type) {
-        statusLabel.setText(message);
+    private void playNotificationSound() {
+        try {
+            java.awt.Toolkit.getDefaultToolkit().beep();
+        } catch (Exception e) {
+            System.err.println("Hang lejátszási hiba: " + e.getMessage());
+        }
+    }
 
-        String color = switch (type) {
-            case "success" -> "#2ecc71";
-            case "error" -> "#e74c3c";
-            case "warning" -> "#f39c12";
-            default -> "#3498db";
-        };
+    private void disableControls(boolean disable) {
+        hoursSpinner.setDisable(disable);
+        minutesSpinner.setDisable(disable);
+        secondsSpinner.setDisable(disable);
+        workCategoryToggle.setDisable(disable);
+        studyCategoryToggle.setDisable(disable);
+        entertainmentCategoryToggle.setDisable(disable);
+    }
 
-        statusLabel.setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Preset metódusok
+    @FXML private void setTimer5Min() { setTimerPreset(0, 5, 0); }
+    @FXML private void setTimer15Min() { setTimerPreset(0, 15, 0); }
+    @FXML private void setTimer25Min() { setTimerPreset(0, 25, 0); }
+    @FXML private void setTimer30Min() { setTimerPreset(0, 30, 0); }
+    @FXML private void setTimer45Min() { setTimerPreset(0, 45, 0); }
+    @FXML private void setTimer1Hour() { setTimerPreset(1, 0, 0); }
+    @FXML private void setTimer2Hour() { setTimerPreset(2, 0, 0); }
+    @FXML private void setTimer3Hour() { setTimerPreset(3, 0, 0); }
+
+    private void setTimerPreset(int hours, int minutes, int seconds) {
+        if (!isRunning) {
+            hoursSpinner.getValueFactory().setValue(hours);
+            minutesSpinner.getValueFactory().setValue(minutes);
+            secondsSpinner.getValueFactory().setValue(seconds);
+            updateTotalSeconds();
+        }
     }
 }

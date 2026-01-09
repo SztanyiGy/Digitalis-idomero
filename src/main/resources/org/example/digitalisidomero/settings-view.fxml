@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -7,126 +8,158 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.digitalisidomero.ui.SettingsController"
             fitToWidth="true"
-            style="-fx-background-color: transparent;">
+            stylesheets="@settings.css"
+            styleClass="scroll-pane">
 
-    <VBox spacing="25" style="-fx-padding: 0;">
+    <VBox spacing="20" styleClass="responsive-container">
+        <padding>
+            <Insets top="30" bottom="30" left="40" right="40"/>
+        </padding>
 
         <!-- Fejléc -->
-        <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
-            <Label text="⚙️ Beállítások" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-            <Label text="Személyre szabás és értesítések" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d;"/>
+        <VBox spacing="8" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+            <Label text="⚙️ Beállítások" styleClass="card-header"/>
+            <Label text="Személyre szabás és beállítások" styleClass="card-subtitle"/>
         </VBox>
 
-        <!-- Időkorlát beállítás -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
-            <Label text="⏰ Időkorlát és értesítések" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-            <Separator/>
+        <!-- IDŐZÍTŐ SZEKCIÓ -->
+        <VBox spacing="15" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
 
-            <!-- Időkorlát bekapcsolása -->
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <CheckBox fx:id="timeLimitEnabled" text="Időkorlát bekapcsolása"
-                          style="-fx-font-size: 14px; -fx-font-weight: 600;"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="⏰" style="-fx-font-size: 24px;"/>
+                <Label text="Időzítő munkafolyamathoz" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
             </HBox>
 
-            <!-- Időkorlát beállítása -->
-            <VBox spacing="10" fx:id="timeLimitSettings">
-                <Label text="Értesítés ennyi idő után:" style="-fx-font-size: 13px; -fx-text-fill: #555;"/>
+            <Separator/>
 
-                <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Állíts be egy időzítőt, és válaszd ki a tevékenység kategóriáját. Az időzítő alatt végzett munka automatikusan mentésre kerül."
+                   style="-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-wrap-text: true;"/>
+
+            <!-- Időzítő kijelző -->
+            <VBox spacing="12" alignment="CENTER" style="-fx-background-color: #f8fafc; -fx-background-radius: 12; -fx-padding: 25;">
+                <Label fx:id="timerDisplayLabel" text="00:00:00" styleClass="timer-display"/>
+                <Label fx:id="timerStatusLabel" text="Leállítva" styleClass="status-label, status-stopped"/>
+            </VBox>
+
+            <!-- Kategória választás -->
+            <VBox spacing="10">
+                <Label text="📂 Kategória kiválasztása:" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+
+                <HBox spacing="12" alignment="CENTER">
+                    <ToggleButton fx:id="workCategoryToggle" text="💼 Munka" styleClass="category-toggle, category-work"
+                                  prefWidth="150" prefHeight="45"/>
+                    <ToggleButton fx:id="studyCategoryToggle" text="📚 Tanulás" styleClass="category-toggle, category-study"
+                                  prefWidth="150" prefHeight="45"/>
+                    <ToggleButton fx:id="entertainmentCategoryToggle" text="🎮 Szórakozás" styleClass="category-toggle, category-entertainment"
+                                  prefWidth="150" prefHeight="45"/>
+                </HBox>
+
+                <Label fx:id="categoryWarningLabel" text=""
+                       style="-fx-font-size: 12px; -fx-text-fill: #dc2626; -fx-font-weight: 600;" visible="false"/>
+            </VBox>
+
+            <!-- Idő beállítás -->
+            <VBox spacing="10">
+                <Label text="⏱️ Időtartam beállítása:" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+
+                <HBox spacing="15" alignment="CENTER">
                     <!-- Órák -->
-                    <VBox spacing="5" alignment="CENTER">
-                        <Label text="Óra" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
-                        <Spinner fx:id="hoursSpinner" prefWidth="80" editable="true"/>
+                    <VBox spacing="6" alignment="CENTER">
+                        <Label text="Órák" styleClass="spinner-label"/>
+                        <Spinner fx:id="hoursSpinner" styleClass="time-spinner" prefWidth="90" editable="true"/>
                     </VBox>
 
-                    <Label text=":" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                    <Label text=":" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;"/>
 
                     <!-- Percek -->
-                    <VBox spacing="5" alignment="CENTER">
-                        <Label text="Perc" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
-                        <Spinner fx:id="minutesSpinner" prefWidth="80" editable="true"/>
+                    <VBox spacing="6" alignment="CENTER">
+                        <Label text="Percek" styleClass="spinner-label"/>
+                        <Spinner fx:id="minutesSpinner" styleClass="time-spinner" prefWidth="90" editable="true"/>
                     </VBox>
 
-                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text=":" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;"/>
 
-                    <Button text="💾 Mentés" onAction="#saveTimeLimit"
-                            style="-fx-font-size: 14px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: 600;"/>
+                    <!-- Másodpercek -->
+                    <VBox spacing="6" alignment="CENTER">
+                        <Label text="Másodpercek" styleClass="spinner-label"/>
+                        <Spinner fx:id="secondsSpinner" styleClass="time-spinner" prefWidth="90" editable="true"/>
+                    </VBox>
                 </HBox>
+            </VBox>
 
-                <!-- Jelenlegi beállítás -->
-                <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #e8f4f8; -fx-padding: 12; -fx-background-radius: 8;">
+            <!-- Gyors preset gombok -->
+            <VBox spacing="8">
+                <Label text="⚡ Gyors választás:" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+
+                <GridPane hgap="10" vgap="10">
+                    <Button text="5 perc" onAction="#setTimer5Min" styleClass="preset-button-small"
+                            GridPane.columnIndex="0" GridPane.rowIndex="0" maxWidth="Infinity"/>
+                    <Button text="15 perc" onAction="#setTimer15Min" styleClass="preset-button-small"
+                            GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity"/>
+                    <Button text="25 perc" onAction="#setTimer25Min" styleClass="preset-button-small"
+                            GridPane.columnIndex="2" GridPane.rowIndex="0" maxWidth="Infinity"/>
+                    <Button text="30 perc" onAction="#setTimer30Min" styleClass="preset-button-small"
+                            GridPane.columnIndex="3" GridPane.rowIndex="0" maxWidth="Infinity"/>
+
+                    <Button text="45 perc" onAction="#setTimer45Min" styleClass="preset-button-small"
+                            GridPane.columnIndex="0" GridPane.rowIndex="1" maxWidth="Infinity"/>
+                    <Button text="1 óra" onAction="#setTimer1Hour" styleClass="preset-button-small"
+                            GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity"/>
+                    <Button text="2 óra" onAction="#setTimer2Hour" styleClass="preset-button-small"
+                            GridPane.columnIndex="2" GridPane.rowIndex="1" maxWidth="Infinity"/>
+                    <Button text="3 óra" onAction="#setTimer3Hour" styleClass="preset-button-small"
+                            GridPane.columnIndex="3" GridPane.rowIndex="1" maxWidth="Infinity"/>
+
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
+                    </columnConstraints>
+                </GridPane>
+            </VBox>
+
+            <!-- Vezérlő gombok -->
+            <HBox spacing="12" alignment="CENTER">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <Button fx:id="startTimerButton" text="▶ Indítás" onAction="#handleStartTimer"
+                        styleClass="control-button, btn-start" minWidth="130" prefHeight="45"/>
+                <Button fx:id="pauseTimerButton" text="⏸ Szünet" onAction="#handlePauseTimer"
+                        styleClass="control-button, btn-pause" minWidth="130" prefHeight="45" disable="true"/>
+                <Button fx:id="stopTimerButton" text="⏹ Leállítás" onAction="#handleStopTimer"
+                        styleClass="control-button, btn-stop" minWidth="130" prefHeight="45" disable="true"/>
+            </HBox>
+
+            <!-- Info box -->
+            <VBox spacing="8" style="-fx-background-color: #dbeafe; -fx-background-radius: 10; -fx-border-color: #60a5fa; -fx-border-width: 2; -fx-border-radius: 10;">
+                <padding>
+                    <Insets top="15" bottom="15" left="20" right="20"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
                     <Label text="ℹ️" style="-fx-font-size: 18px;"/>
-                    <Label fx:id="currentTimeLimitLabel" text="Nincs időkorlát beállítva"
-                           style="-fx-font-size: 13px; -fx-text-fill: #2980b9; -fx-font-weight: 600;"/>
+                    <Label text="Hogyan működik?" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e40af;"/>
                 </HBox>
+                <VBox spacing="4">
+                    <Label text="1. Válassz kategóriát (Munka, Tanulás vagy Szórakozás)"
+                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
+                    <Label text="2. Állítsd be az időtartamot vagy válassz a gyors gombok közül"
+                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
+                    <Label text="3. Indítsd el az időzítőt - az idő automatikusan mentésre kerül a kiválasztott kategóriába"
+                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
+                    <Label text="4. Értesítést kapsz, amikor lejár az idő"
+                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
+                </VBox>
             </VBox>
 
-            <!-- Értesítési opciók -->
-            <VBox spacing="10" style="-fx-padding: 15 0 0 0;">
-                <Label text="Értesítési beállítások:" style="-fx-font-size: 13px; -fx-font-weight: 600;"/>
-                <CheckBox fx:id="soundEnabled" text="Hang lejátszása értesítéskor"
-                          style="-fx-font-size: 13px;"/>
-                <CheckBox fx:id="autoResetEnabled" text="Automatikus újraindítás értesítés után"
-                          style="-fx-font-size: 13px;"/>
-            </VBox>
         </VBox>
-
-        <!-- Kategória kezelés -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
-            <Label text="🏷️ Alkalmazás kategóriák" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-            <Separator/>
-
-            <Label text="Állítsd be, melyik alkalmazás melyik kategóriába tartozzon:"
-                   style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d;"/>
-
-            <!-- Alkalmazás lista kategóriákkal -->
-            <TableView fx:id="applicationTable" prefHeight="300">
-                <columns>
-                    <TableColumn fx:id="appNameColumn" text="Alkalmazás" prefWidth="300"/>
-                    <TableColumn fx:id="appCategoryColumn" text="Kategória" prefWidth="200"/>
-                    <TableColumn fx:id="appActionsColumn" text="Műveletek" prefWidth="150"/>
-                </columns>
-            </TableView>
-
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <Button text="➕ Új alkalmazás hozzáadása" onAction="#addNewApplication"
-                        style="-fx-font-size: 13px; -fx-padding: 10 20; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: 600;"/>
-
-                <Button text="🔄 Frissítés" onAction="#refreshApplicationList"
-                        style="-fx-font-size: 13px; -fx-padding: 10 20; -fx-background-color: #95a5a6; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;"/>
-            </HBox>
-        </VBox>
-
-        <!-- Megjelenés -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
-            <Label text="🎨 Megjelenés" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-            <Separator/>
-
-            <CheckBox fx:id="darkModeEnabled" text="Sötét mód (hamarosan)"
-                      style="-fx-font-size: 13px;" disable="true"/>
-
-            <CheckBox fx:id="compactViewEnabled" text="Kompakt nézet"
-                      style="-fx-font-size: 13px;" disable="true"/>
-        </VBox>
-
-        <!-- Adatbázis -->
-        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
-            <Label text="💾 Adatbázis" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-            <Separator/>
-
-            <HBox spacing="15">
-                <Button text="🗑️ Régi adatok törlése" onAction="#clearOldData"
-                        style="-fx-font-size: 13px; -fx-padding: 10 20; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;"/>
-
-                <Button text="📤 Adatbázis exportálása" onAction="#exportDatabase"
-                        style="-fx-font-size: 13px; -fx-padding: 10 20; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;"/>
-            </HBox>
-
-            <Label fx:id="dbStatusLabel" text="" style="-fx-font-size: 12px; -fx-font-weight: 600;"/>
-        </VBox>
-
-        <!-- Státusz -->
-        <Label fx:id="statusLabel" text="" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-padding: 10;"/>
 
     </VBox>
 

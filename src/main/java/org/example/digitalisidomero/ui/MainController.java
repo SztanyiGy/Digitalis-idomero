@@ -5,9 +5,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.digitalisidomero.model.Application;
@@ -32,6 +34,7 @@ public class MainController {
 
     // Nézetek
     @FXML private ScrollPane homeViewScroll;
+    @FXML private ScrollPane settingsViewScroll;
     @FXML private VBox homeView;
     @FXML private VBox statisticsView;
     @FXML private VBox settingsView;
@@ -127,17 +130,36 @@ public class MainController {
         highlightNavButton(navStatsButton);
     }
 
+    private boolean settingsViewLoaded = false; // ← Add hozzá a statisticsViewLoaded mellé
+
     @FXML
     private void showSettingsPage() {
         homeViewScroll.setVisible(false);
         homeViewScroll.setManaged(false);
         statisticsView.setVisible(false);
         statisticsView.setManaged(false);
+
+        if (!settingsViewLoaded) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/digitalisidomero/settings-view.fxml"));
+                Node settingsContent = loader.load();  // ← Node, nem ScrollPane!
+                settingsView.getChildren().add(settingsContent);
+                settingsViewLoaded = true;
+                System.out.println("✓ Beállítások nézet betöltve");
+            } catch (Exception e) {  // ← Exception, nem csak IOException
+                e.printStackTrace();
+                System.err.println("Settings hiba: " + e.getMessage());
+                Label errorLabel = new Label("⚠️ Settings hiba: " + e.getMessage());
+                errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
+                settingsView.getChildren().add(errorLabel);
+            }
+        }
+
         settingsView.setVisible(true);
         settingsView.setManaged(true);
-
-        highlightNavButton(navSettingsButton);
+        highlightNavButton(navSettingsButton);  // ← highlightNavButton, nem highlightNavButtons!
     }
+
 
     private void highlightNavButton(Button activeButton) {
         // Reset all buttons - CSS osztályok használata
