@@ -50,6 +50,15 @@
                     </graphic>
                 </Button>
 
+                <Button fx:id="navStopperButton" onAction="#showStopperPage" styleClass="nav-button" maxWidth="Infinity">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="8">
+                            <Label text="⏱️" styleClass="nav-button-icon"/>
+                            <Label text="Stopper" styleClass="nav-button-text"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
                 <Button fx:id="navSettingsButton" onAction="#showSettingsPage" styleClass="nav-button" maxWidth="Infinity">
                     <graphic>
                         <VBox alignment="CENTER" spacing="8">
@@ -95,16 +104,36 @@
                         <Label text="Kövesse nyomon digitális eszközhasználatát" styleClass="card-subtitle"/>
                     </VBox>
 
+                    <!-- Kategória választás -->
+                    <VBox spacing="12" styleClass="card">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+                        <Label text="📂 Naplózási kategória" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Separator/>
+                        <Label text="Válaszd ki, hogy most milyen tevékenységet végzel. A naplózás eszerint menti az időt."
+                               style="-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-wrap-text: true;"/>
+
+                        <HBox spacing="12" alignment="CENTER">
+                            <ToggleButton fx:id="workCategoryToggle" text="💼 Munka" styleClass="category-toggle, category-work"
+                                          prefWidth="160" prefHeight="50"/>
+                            <ToggleButton fx:id="studyCategoryToggle" text="📚 Tanulás" styleClass="category-toggle, category-study"
+                                          prefWidth="160" prefHeight="50"/>
+                            <ToggleButton fx:id="entertainmentCategoryToggle" text="🎮 Szórakozás" styleClass="category-toggle, category-entertainment"
+                                          prefWidth="160" prefHeight="50"/>
+                        </HBox>
+                    </VBox>
+
                     <!-- Vezérlők -->
                     <HBox spacing="15" alignment="CENTER" styleClass="card">
                         <padding>
                             <Insets top="25" bottom="25" left="30" right="30"/>
                         </padding>
-                        <Button fx:id="startButton" text="▶  Start" onAction="#handleStart"
+                        <Button fx:id="startButton" text="▶  Indítás" onAction="#handleStart"
                                 styleClass="control-button, btn-start" minWidth="140" prefHeight="50"/>
                         <Button fx:id="pauseButton" text="⏸  Szünet" onAction="#handlePause"
                                 styleClass="control-button, btn-pause" minWidth="140" prefHeight="50" disable="true"/>
-                        <Button fx:id="stopButton" text="⏹  Stop" onAction="#handleStop"
+                        <Button fx:id="stopButton" text="⏹  Leállítás" onAction="#handleStop"
                                 styleClass="control-button, btn-stop" minWidth="140" prefHeight="50" disable="true"/>
                     </HBox>
 
@@ -178,8 +207,46 @@
             <!-- STATISZTIKA VIEW -->
             <VBox fx:id="statisticsView" visible="false" managed="false" style="-fx-background-color: transparent;"/>
 
+            <!-- STOPPER VIEW -->
+            <VBox fx:id="stopperView" visible="false" managed="false" style="-fx-background-color: transparent;"/>
+
             <!-- BEÁLLÍTÁSOK VIEW -->
             <VBox fx:id="settingsView" visible="false" managed="false" style="-fx-background-color: transparent;"/>
+            <ScrollPane fx:id="settingsViewScroll" visible="false" managed="false" fitToWidth="true"
+                        hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;">
+                <VBox fx:id="settingsView" spacing="20" styleClass="responsive-container">
+                    <padding>
+                        <Insets top="30" bottom="30" left="40" right="40"/>
+                    </padding>
+
+                    <VBox spacing="8" styleClass="card">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+                        <Label text="⚙️ Beállítások" styleClass="card-header"/>
+                        <Label text="Személyre szabás és beállítások" styleClass="card-subtitle"/>
+                    </VBox>
+
+                    <VBox spacing="15" styleClass="card">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+                        <Label text="🎨 Megjelenés" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Separator/>
+                        <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                    </VBox>
+
+                    <VBox spacing="15" styleClass="card">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+                        <Label text="🔔 Értesítések" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Separator/>
+                        <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
 
         </StackPane>
     </center>

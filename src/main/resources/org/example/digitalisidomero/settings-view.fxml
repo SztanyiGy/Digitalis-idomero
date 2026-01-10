@@ -7,9 +7,8 @@
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.digitalisidomero.ui.SettingsController"
-            fitToWidth="true"
-            stylesheets="@settings.css"
-            styleClass="scroll-pane">
+            fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+            style="-fx-background-color: transparent; -fx-background: transparent;">
 
     <VBox spacing="20" styleClass="responsive-container">
         <padding>
@@ -22,143 +21,135 @@
                 <Insets top="25" bottom="25" left="30" right="30"/>
             </padding>
             <Label text="⚙️ Beállítások" styleClass="card-header"/>
-            <Label text="Személyre szabás és beállítások" styleClass="card-subtitle"/>
+            <Label text="Személyre szabás és preferenciák" styleClass="card-subtitle"/>
         </VBox>
 
-        <!-- IDŐZÍTŐ SZEKCIÓ -->
-        <VBox spacing="15" styleClass="card">
+        <!-- MEGJELENÉS -->
+        <VBox spacing="18" styleClass="card">
             <padding>
                 <Insets top="25" bottom="25" left="30" right="30"/>
             </padding>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="⏰" style="-fx-font-size: 24px;"/>
-                <Label text="Időzítő munkafolyamathoz" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="🎨" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Megjelenés" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Testreszabd az alkalmazás kinézetét" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
             </HBox>
 
             <Separator/>
 
-            <Label text="Állíts be egy időzítőt, és válaszd ki a tevékenység kategóriáját. Az időzítő alatt végzett munka automatikusan mentésre kerül."
-                   style="-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-wrap-text: true;"/>
-
-            <!-- Időzítő kijelző -->
-            <VBox spacing="12" alignment="CENTER" style="-fx-background-color: #f8fafc; -fx-background-radius: 12; -fx-padding: 25;">
-                <Label fx:id="timerDisplayLabel" text="00:00:00" styleClass="timer-display"/>
-                <Label fx:id="timerStatusLabel" text="Leállítva" styleClass="status-label, status-stopped"/>
-            </VBox>
-
-            <!-- Kategória választás -->
-            <VBox spacing="10">
-                <Label text="📂 Kategória kiválasztása:" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
-
-                <HBox spacing="12" alignment="CENTER">
-                    <ToggleButton fx:id="workCategoryToggle" text="💼 Munka" styleClass="category-toggle, category-work"
-                                  prefWidth="150" prefHeight="45"/>
-                    <ToggleButton fx:id="studyCategoryToggle" text="📚 Tanulás" styleClass="category-toggle, category-study"
-                                  prefWidth="150" prefHeight="45"/>
-                    <ToggleButton fx:id="entertainmentCategoryToggle" text="🎮 Szórakozás" styleClass="category-toggle, category-entertainment"
-                                  prefWidth="150" prefHeight="45"/>
+            <!-- Téma választás -->
+            <VBox spacing="12">
+                <Label text="Színséma" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+                <HBox spacing="12">
+                    <ToggleButton text="☀️ Világos" styleClass="theme-toggle" prefWidth="180" prefHeight="50" selected="true"/>
+                    <ToggleButton text="🌙 Sötét" styleClass="theme-toggle" prefWidth="180" prefHeight="50" disable="true"/>
+                    <ToggleButton text="🌈 Színes" styleClass="theme-toggle" prefWidth="180" prefHeight="50" disable="true"/>
                 </HBox>
-
-                <Label fx:id="categoryWarningLabel" text=""
-                       style="-fx-font-size: 12px; -fx-text-fill: #dc2626; -fx-font-weight: 600;" visible="false"/>
+                <Label text="(Hamarosan - több téma elérhető lesz)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
             </VBox>
 
-            <!-- Idő beállítás -->
-            <VBox spacing="10">
-                <Label text="⏱️ Időtartam beállítása:" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
-
-                <HBox spacing="15" alignment="CENTER">
-                    <!-- Órák -->
-                    <VBox spacing="6" alignment="CENTER">
-                        <Label text="Órák" styleClass="spinner-label"/>
-                        <Spinner fx:id="hoursSpinner" styleClass="time-spinner" prefWidth="90" editable="true"/>
-                    </VBox>
-
-                    <Label text=":" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;"/>
-
-                    <!-- Percek -->
-                    <VBox spacing="6" alignment="CENTER">
-                        <Label text="Percek" styleClass="spinner-label"/>
-                        <Spinner fx:id="minutesSpinner" styleClass="time-spinner" prefWidth="90" editable="true"/>
-                    </VBox>
-
-                    <Label text=":" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;"/>
-
-                    <!-- Másodpercek -->
-                    <VBox spacing="6" alignment="CENTER">
-                        <Label text="Másodpercek" styleClass="spinner-label"/>
-                        <Spinner fx:id="secondsSpinner" styleClass="time-spinner" prefWidth="90" editable="true"/>
-                    </VBox>
+            <!-- Betűméret -->
+            <VBox spacing="12">
+                <Label text="Betűméret" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+                <HBox spacing="12">
+                    <Button text="A-" styleClass="preset-button-small" prefWidth="80" disable="true"/>
+                    <Button text="A" styleClass="preset-button-small" prefWidth="80"/>
+                    <Button text="A+" styleClass="preset-button-small" prefWidth="80" disable="true"/>
                 </HBox>
+                <Label text="(Hamarosan)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
             </VBox>
 
-            <!-- Gyors preset gombok -->
-            <VBox spacing="8">
-                <Label text="⚡ Gyors választás:" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+        </VBox>
 
-                <GridPane hgap="10" vgap="10">
-                    <Button text="5 perc" onAction="#setTimer5Min" styleClass="preset-button-small"
-                            GridPane.columnIndex="0" GridPane.rowIndex="0" maxWidth="Infinity"/>
-                    <Button text="15 perc" onAction="#setTimer15Min" styleClass="preset-button-small"
-                            GridPane.columnIndex="1" GridPane.rowIndex="0" maxWidth="Infinity"/>
-                    <Button text="25 perc" onAction="#setTimer25Min" styleClass="preset-button-small"
-                            GridPane.columnIndex="2" GridPane.rowIndex="0" maxWidth="Infinity"/>
-                    <Button text="30 perc" onAction="#setTimer30Min" styleClass="preset-button-small"
-                            GridPane.columnIndex="3" GridPane.rowIndex="0" maxWidth="Infinity"/>
+        <!-- KATEGÓRIÁK -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
 
-                    <Button text="45 perc" onAction="#setTimer45Min" styleClass="preset-button-small"
-                            GridPane.columnIndex="0" GridPane.rowIndex="1" maxWidth="Infinity"/>
-                    <Button text="1 óra" onAction="#setTimer1Hour" styleClass="preset-button-small"
-                            GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="Infinity"/>
-                    <Button text="2 óra" onAction="#setTimer2Hour" styleClass="preset-button-small"
-                            GridPane.columnIndex="2" GridPane.rowIndex="1" maxWidth="Infinity"/>
-                    <Button text="3 óra" onAction="#setTimer3Hour" styleClass="preset-button-small"
-                            GridPane.columnIndex="3" GridPane.rowIndex="1" maxWidth="Infinity"/>
-
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
-                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
-                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
-                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS"/>
-                    </columnConstraints>
-                </GridPane>
-            </VBox>
-
-            <!-- Vezérlő gombok -->
-            <HBox spacing="12" alignment="CENTER">
-                <padding>
-                    <Insets top="10"/>
-                </padding>
-                <Button fx:id="startTimerButton" text="▶ Indítás" onAction="#handleStartTimer"
-                        styleClass="control-button, btn-start" minWidth="130" prefHeight="45"/>
-                <Button fx:id="pauseTimerButton" text="⏸ Szünet" onAction="#handlePauseTimer"
-                        styleClass="control-button, btn-pause" minWidth="130" prefHeight="45" disable="true"/>
-                <Button fx:id="stopTimerButton" text="⏹ Leállítás" onAction="#handleStopTimer"
-                        styleClass="control-button, btn-stop" minWidth="130" prefHeight="45" disable="true"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="📂" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Kategóriák kezelése" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Hozz létre és kezelj egyedi kategóriákat" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
             </HBox>
 
-            <!-- Info box -->
-            <VBox spacing="8" style="-fx-background-color: #dbeafe; -fx-background-radius: 10; -fx-border-color: #60a5fa; -fx-border-width: 2; -fx-border-radius: 10;">
-                <padding>
-                    <Insets top="15" bottom="15" left="20" right="20"/>
-                </padding>
-                <HBox spacing="8" alignment="CENTER_LEFT">
-                    <Label text="ℹ️" style="-fx-font-size: 18px;"/>
-                    <Label text="Hogyan működik?" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #1e40af;"/>
-                </HBox>
-                <VBox spacing="4">
-                    <Label text="1. Válassz kategóriát (Munka, Tanulás vagy Szórakozás)"
-                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
-                    <Label text="2. Állítsd be az időtartamot vagy válassz a gyors gombok közül"
-                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
-                    <Label text="3. Indítsd el az időzítőt - az idő automatikusan mentésre kerül a kiválasztott kategóriába"
-                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
-                    <Label text="4. Értesítést kapsz, amikor lejár az idő"
-                           style="-fx-font-size: 12px; -fx-text-fill: #1e3a8a;"/>
+            <Separator/>
+
+            <Label text="(Hamarosan - egyedi kategóriák létrehozása, szerkesztése, törlése)"
+                   style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+
+        <!-- ÉRTESÍTÉSEK -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="🔔" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Értesítések" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Állítsd be az értesítési preferenciáid" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
                 </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <VBox spacing="12">
+                <CheckBox text="Napi összefoglaló értesítés" disable="true"/>
+                <CheckBox text="Hangjelzés időzítő lejáratakor" disable="true"/>
+                <CheckBox text="Figyelmeztető hosszú használat esetén" disable="true"/>
+                <Label text="(Hamarosan)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
             </VBox>
 
+        </VBox>
+
+        <!-- ADATOK -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="💾" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Adatkezelés" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Exportálás és adattörlés" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <VBox spacing="12">
+                <Button text="📊 Adatok exportálása" styleClass="preset-button" maxWidth="250" disable="true"/>
+                <Button text="🗑️ Adatok törlése" styleClass="preset-button" maxWidth="250" disable="true"/>
+                <Label text="(Hamarosan)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- NÉVJEGY -->
+        <VBox spacing="15" styleClass="card" style="-fx-background-color: #f8fafc;">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="ℹ️" style="-fx-font-size: 20px;"/>
+                <VBox spacing="2">
+                    <Label text="Digitális Időmérő v1.0" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Kövesse nyomon digitális eszközhasználatát" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
         </VBox>
 
     </VBox>

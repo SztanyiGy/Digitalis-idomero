@@ -9,7 +9,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.digitalisidomero.model.Application;
@@ -30,13 +29,14 @@ public class MainController {
     // Navigáció
     @FXML private Button navHomeButton;
     @FXML private Button navStatsButton;
+    @FXML private Button navStopperButton;
     @FXML private Button navSettingsButton;
 
     // Nézetek
     @FXML private ScrollPane homeViewScroll;
-    @FXML private ScrollPane settingsViewScroll;
     @FXML private VBox homeView;
     @FXML private VBox statisticsView;
+    @FXML private VBox stopperView;
     @FXML private VBox settingsView;
 
     @FXML private Label statusLabel;
@@ -55,6 +55,8 @@ public class MainController {
     private Timeline updateTimeline;
 
     private boolean statisticsViewLoaded = false;
+    private boolean stopperViewLoaded = false;
+    private boolean settingsViewLoaded = false;
 
     @FXML
     public void initialize() {
@@ -87,6 +89,8 @@ public class MainController {
         homeViewScroll.setManaged(true);
         statisticsView.setVisible(false);
         statisticsView.setManaged(false);
+        stopperView.setVisible(false);
+        stopperView.setManaged(false);
         settingsView.setVisible(false);
         settingsView.setManaged(false);
 
@@ -98,6 +102,8 @@ public class MainController {
     private void showStatisticsPage() {
         homeViewScroll.setVisible(false);
         homeViewScroll.setManaged(false);
+        stopperView.setVisible(false);
+        stopperView.setManaged(false);
         settingsView.setVisible(false);
         settingsView.setManaged(false);
 
@@ -107,7 +113,6 @@ public class MainController {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/org/example/digitalisidomero/statistics-view.fxml")
                 );
-                // A statistics-view.fxml gyökér eleme ScrollPane, azt töltjük be
                 ScrollPane statsContent = loader.load();
                 statisticsView.getChildren().add(statsContent);
                 statisticsViewLoaded = true;
@@ -117,7 +122,6 @@ public class MainController {
                 e.printStackTrace();
                 System.err.println("✗ Hiba a statisztika nézet betöltésekor: " + e.getMessage());
 
-                // Fallback - hibaüzenet megjelenítése
                 Label errorLabel = new Label("⚠️ Nem sikerült betölteni a statisztika nézetet");
                 errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
                 statisticsView.getChildren().add(errorLabel);
@@ -130,7 +134,41 @@ public class MainController {
         highlightNavButton(navStatsButton);
     }
 
-    private boolean settingsViewLoaded = false; // ← Add hozzá a statisticsViewLoaded mellé
+    @FXML
+    private void showStopperPage() {
+        homeViewScroll.setVisible(false);
+        homeViewScroll.setManaged(false);
+        statisticsView.setVisible(false);
+        statisticsView.setManaged(false);
+        settingsView.setVisible(false);
+        settingsView.setManaged(false);
+
+        // Stopper nézet betöltése (csak egyszer)
+        if (!stopperViewLoaded) {
+            try {
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/org/example/digitalisidomero/timer-view.fxml")
+                );
+                Node stopperContent = loader.load();
+                stopperView.getChildren().add(stopperContent);
+                stopperViewLoaded = true;
+
+                System.out.println("✓ Stopper nézet betöltve");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("✗ Hiba a stopper nézet betöltésekor: " + e.getMessage());
+
+                Label errorLabel = new Label("⚠️ Stopper hiba: " + e.getMessage());
+                errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
+                stopperView.getChildren().add(errorLabel);
+            }
+        }
+
+        stopperView.setVisible(true);
+        stopperView.setManaged(true);
+
+        highlightNavButton(navStopperButton);
+    }
 
     @FXML
     private void showSettingsPage() {
@@ -138,17 +176,24 @@ public class MainController {
         homeViewScroll.setManaged(false);
         statisticsView.setVisible(false);
         statisticsView.setManaged(false);
+        stopperView.setVisible(false);
+        stopperView.setManaged(false);
 
+        // Beállítások nézet betöltése (csak egyszer)
         if (!settingsViewLoaded) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/digitalisidomero/settings-view.fxml"));
-                Node settingsContent = loader.load();  // ← Node, nem ScrollPane!
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/org/example/digitalisidomero/settings-view.fxml")
+                );
+                Node settingsContent = loader.load();
                 settingsView.getChildren().add(settingsContent);
                 settingsViewLoaded = true;
+
                 System.out.println("✓ Beállítások nézet betöltve");
-            } catch (Exception e) {  // ← Exception, nem csak IOException
+            } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("Settings hiba: " + e.getMessage());
+                System.err.println("✗ Hiba a beállítások nézet betöltésekor: " + e.getMessage());
+
                 Label errorLabel = new Label("⚠️ Settings hiba: " + e.getMessage());
                 errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
                 settingsView.getChildren().add(errorLabel);
@@ -157,14 +202,15 @@ public class MainController {
 
         settingsView.setVisible(true);
         settingsView.setManaged(true);
-        highlightNavButton(navSettingsButton);  // ← highlightNavButton, nem highlightNavButtons!
-    }
 
+        highlightNavButton(navSettingsButton);
+    }
 
     private void highlightNavButton(Button activeButton) {
         // Reset all buttons - CSS osztályok használata
         navHomeButton.getStyleClass().remove("nav-button-active");
         navStatsButton.getStyleClass().remove("nav-button-active");
+        navStopperButton.getStyleClass().remove("nav-button-active");
         navSettingsButton.getStyleClass().remove("nav-button-active");
 
         // Highlight active
@@ -172,6 +218,8 @@ public class MainController {
             activeButton.getStyleClass().add("nav-button-active");
         }
     }
+
+    // ===== TRACKING VEZÉRLÉS =====
 
     @FXML
     private void handleStart() {
