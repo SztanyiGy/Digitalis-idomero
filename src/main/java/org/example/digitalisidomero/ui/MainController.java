@@ -6,9 +6,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.example.digitalisidomero.model.Application;
@@ -48,6 +46,11 @@ public class MainController {
     @FXML private Label todayWorkLabel;
     @FXML private Label todayEntertainmentLabel;
 
+    // Kategória választás gombok
+    @FXML private ToggleButton workCategoryToggle;
+    @FXML private ToggleButton studyCategoryToggle;
+    @FXML private ToggleButton entertainmentCategoryToggle;
+
     private TrackingService trackingService;
     private StatisticsService statisticsService;
     private CategoryService categoryService;
@@ -58,12 +61,18 @@ public class MainController {
     private boolean stopperViewLoaded = false;
     private boolean settingsViewLoaded = false;
 
+    private ToggleGroup categoryToggleGroup;
+    private Category selectedCategory = null;
+
     @FXML
     public void initialize() {
         // Service-ek inicializálása
         trackingService = new TrackingService();
         statisticsService = new StatisticsService();
         categoryService = new CategoryService();
+
+        // Kategória toggle group beállítása
+        setupCategoryToggleGroup();
 
         // Kezdő állapot beállítása
         updateButtonStates(false, false);
@@ -79,6 +88,35 @@ public class MainController {
 
         // Navigáció - Főoldal aktív alapból
         showHomePage();
+    }
+
+    // ===== KATEGÓRIA KEZELÉS =====
+
+    private void setupCategoryToggleGroup() {
+        categoryToggleGroup = new ToggleGroup();
+        workCategoryToggle.setToggleGroup(categoryToggleGroup);
+        studyCategoryToggle.setToggleGroup(categoryToggleGroup);
+        entertainmentCategoryToggle.setToggleGroup(categoryToggleGroup);
+
+        // Listener a kategória változáshoz
+        categoryToggleGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle != null) {
+                updateSelectedCategory();
+            }
+        });
+    }
+
+    private void updateSelectedCategory() {
+        if (workCategoryToggle.isSelected()) {
+            selectedCategory = Category.WORK;
+            System.out.println("DEBUG: Munka kategória kiválasztva");
+        } else if (studyCategoryToggle.isSelected()) {
+            selectedCategory = Category.WORK; // Ha nincs külön STUDY kategóriád
+            System.out.println("DEBUG: Tanulás kategória kiválasztva (WORK-ként)");
+        } else if (entertainmentCategoryToggle.isSelected()) {
+            selectedCategory = Category.ENTERTAINMENT;
+            System.out.println("DEBUG: Szórakozás kategória kiválasztva");
+        }
     }
 
     // ===== NAVIGÁCIÓ =====
@@ -147,7 +185,7 @@ public class MainController {
         if (!stopperViewLoaded) {
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/org/example/digitalisidomero/timer-view.fxml")
+                        getClass().getResource("/org/example/digitalisidomero/stopper-view.fxml")
                 );
                 Node stopperContent = loader.load();
                 stopperView.getChildren().add(stopperContent);
@@ -207,13 +245,11 @@ public class MainController {
     }
 
     private void highlightNavButton(Button activeButton) {
-        // Reset all buttons - CSS osztályok használata
         navHomeButton.getStyleClass().remove("nav-button-active");
         navStatsButton.getStyleClass().remove("nav-button-active");
         navStopperButton.getStyleClass().remove("nav-button-active");
         navSettingsButton.getStyleClass().remove("nav-button-active");
 
-        // Highlight active
         if (!activeButton.getStyleClass().contains("nav-button-active")) {
             activeButton.getStyleClass().add("nav-button-active");
         }
@@ -223,13 +259,36 @@ public class MainController {
 
     @FXML
     private void handleStart() {
+        System.out.println("DEBUG: selectedCategory = " + selectedCategory);
+
+        // Ellenőrzés: van-e kiválasztva kategória
+        if (selectedCategory == null) {
+            showAlert("Kategória szükséges", "Kérlek válassz egy kategóriát a naplózás indítása előtt!");
+            return;
+        }
+
+        System.out.println("DEBUG: setForcedCategory ELŐTT");
+
+        // A kiválasztott kategória beállítása a MonitorService-ben
+        trackingService.getMonitorService().setForcedCategory(selectedCategory);
+
+        System.out.println("DEBUG: setForcedCategory UTÁN");
+
         trackingService.startTracking();
+
         updateButtonStates(true, false);
-        statusLabel.setText("Fut ✓");
-        statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #2ecc71; -fx-font-weight: 600;");
+
+        // Kategória gombok letiltása futás közben
+        disableCategoryToggles(true);
+
+        statusLabel.setText("Futás...");
+        statusLabel.getStyleClass().removeAll("status-stopped", "status-paused");
+        statusLabel.getStyleClass().add("status-running");
 
         // Timeline indítása
         updateTimeline.play();
+
+        System.out.println("✓ Naplózás elindítva - Kényszerített kategória: " + selectedCategory);
     }
 
     @FXML
@@ -238,23 +297,33 @@ public class MainController {
             // Folytatás
             trackingService.resumeTracking();
             pauseButton.setText("⏸  Szünet");
-            statusLabel.setText("Fut ✓");
-            statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #2ecc71; -fx-font-weight: 600;");
+            statusLabel.setText("Futás...");
+            statusLabel.getStyleClass().removeAll("status-stopped", "status-paused");
+            statusLabel.getStyleClass().add("status-running");
         } else {
             // Szüneteltetés
             trackingService.pauseTracking();
             pauseButton.setText("▶  Folytatás");
-            statusLabel.setText("Szünetel ⏸");
-            statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #f39c12; -fx-font-weight: 600;");
+            statusLabel.setText("Szüneteltetve");
+            statusLabel.getStyleClass().removeAll("status-running", "status-stopped");
+            statusLabel.getStyleClass().add("status-paused");
         }
     }
 
     @FXML
     private void handleStop() {
+        // Kényszerített kategória törlése
+        trackingService.getMonitorService().clearForcedCategory();
+
         trackingService.stopTracking();
         updateButtonStates(false, false);
-        statusLabel.setText("Leállítva ✗");
-        statusLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #e74c3c; -fx-font-weight: 600;");
+
+        // Kategória gombok újra engedélyezése
+        disableCategoryToggles(false);
+
+        statusLabel.setText("Leállítva");
+        statusLabel.getStyleClass().removeAll("status-running", "status-paused");
+        statusLabel.getStyleClass().add("status-stopped");
 
         // Timeline leállítása
         updateTimeline.stop();
@@ -263,6 +332,8 @@ public class MainController {
         currentAppLabel.setText("Nincs aktív követés");
         currentAppCategoryLabel.setText("");
         currentSessionTimeLabel.setText("00:00:00");
+
+        System.out.println("✓ Naplózás leállítva");
     }
 
     /**
@@ -276,6 +347,26 @@ public class MainController {
         if (!isRunning) {
             pauseButton.setText("⏸  Szünet");
         }
+    }
+
+    /**
+     * Kategória gombok engedélyezése/letiltása
+     */
+    private void disableCategoryToggles(boolean disable) {
+        workCategoryToggle.setDisable(disable);
+        studyCategoryToggle.setDisable(disable);
+        entertainmentCategoryToggle.setDisable(disable);
+    }
+
+    /**
+     * Figyelmeztető ablak megjelenítése
+     */
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     /**
@@ -307,7 +398,7 @@ public class MainController {
     }
 
     /**
-     * Mai statisztikák frissítése (egyszerűsített - csak számok)
+     * Mai statisztikák frissítése
      */
     private void updateTodayStatistics() {
         // Összes idő

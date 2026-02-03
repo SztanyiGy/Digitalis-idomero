@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.digitalisidomero.database.DatabaseInitializer;
-import org.example.digitalisidomero.monitor.MonitorService;
 
 import java.io.IOException;
 

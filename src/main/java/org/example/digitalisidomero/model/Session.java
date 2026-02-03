@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 
 public class Session {
     private int id;
+    private Category category;
     private int applicationId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -101,5 +102,13 @@ public class Session {
                 ", endTime=" + endTime +
                 ", durationSeconds=" + durationSeconds +
                 '}';
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Category getCategory() {
+        return category;
     }
 }

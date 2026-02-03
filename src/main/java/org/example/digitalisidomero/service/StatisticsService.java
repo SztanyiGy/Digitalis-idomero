@@ -87,10 +87,10 @@ public class StatisticsService {
         }
 
         // Session-ök csoportosítása kategória szerint
+        // JAVÍTVA: A session saját kategóriáját használjuk, nem az application-ét!
         for (Session session : sessions) {
-            Application app = applicationDAO.findById(session.getApplicationId());
-            if (app != null) {
-                Category category = app.getCategory();
+            Category category = session.getCategory();
+            if (category != null) {
                 breakdown.put(category, breakdown.get(category) + session.getDurationSeconds());
             }
         }
