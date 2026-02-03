@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.digitalisidomero.ui.TimerController"
+            fitToWidth="true"
+            style="-fx-background-color: transparent;">
+
+    <VBox spacing="25" style="-fx-padding: 0; -fx-background-color: transparent;">
+
+        <!-- Fejléc -->
+        <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+            <Label text="⏱️ Visszaszámláló Időzítő" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Label text="Állítsd be az időt és kattints az Indítás gombra" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+
+        <!-- Kijelző -->
+        <VBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+            <Label fx:id="timerDisplayLabel" text="00:00:00"
+                   style="-fx-font-size: 64px; -fx-font-weight: bold; -fx-text-fill: #2ecc71; -fx-font-family: 'Consolas', monospace;"/>
+            <Label fx:id="timerStatusLabel" text="⏹️ Leállítva"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #95a5a6;"/>
+        </VBox>
+
+        <!-- Idő beállítása -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+            <Label text="⚙️ Idő beállítása" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Separator/>
+
+            <!-- Spinnerek - RESZPONZÍV GridPane -->
+            <GridPane hgap="20" vgap="10" alignment="CENTER">
+                <!-- Órák -->
+                <VBox spacing="8" alignment="CENTER" GridPane.columnIndex="0">
+                    <Label text="Óra" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d; -fx-font-weight: 600;"/>
+                    <Spinner fx:id="hoursSpinner" prefWidth="100" maxWidth="Infinity"
+                             style="-fx-font-size: 18px;"/>
+                </VBox>
+
+                <Label text=":" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #95a5a6;"
+                       GridPane.columnIndex="1"/>
+
+                <!-- Percek -->
+                <VBox spacing="8" alignment="CENTER" GridPane.columnIndex="2">
+                    <Label text="Perc" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d; -fx-font-weight: 600;"/>
+                    <Spinner fx:id="minutesSpinner" prefWidth="100" maxWidth="Infinity"
+                             style="-fx-font-size: 18px;"/>
+                </VBox>
+
+                <Label text=":" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #95a5a6;"
+                       GridPane.columnIndex="3"/>
+
+                <!-- Másodpercek -->
+                <VBox spacing="8" alignment="CENTER" GridPane.columnIndex="4">
+                    <Label text="Másodperc" style="-fx-font-size: 13px; -fx-text-fill: #7f8c8d; -fx-font-weight: 600;"/>
+                    <Spinner fx:id="secondsSpinner" prefWidth="100" maxWidth="Infinity"
+                             style="-fx-font-size: 18px;"/>
+                </VBox>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints hgrow="NEVER"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints hgrow="NEVER"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+            </GridPane>
+
+            <!-- Gyors gombok - RESZPONZÍV -->
+            <VBox spacing="10">
+                <Label text="Gyors beállítás:" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #555;"/>
+                <GridPane hgap="10" vgap="10">
+                    <Button text="1 perc" onAction="#setTimer1Min"
+                            style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; -fx-background-radius: 8; -fx-cursor: hand;"
+                            maxWidth="Infinity" GridPane.columnIndex="0"/>
+                    <Button text="5 perc" onAction="#setTimer5Min"
+                            style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; -fx-background-radius: 8; -fx-cursor: hand;"
+                            maxWidth="Infinity" GridPane.columnIndex="1"/>
+                    <Button text="10 perc" onAction="#setTimer10Min"
+                            style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; -fx-background-radius: 8; -fx-cursor: hand;"
+                            maxWidth="Infinity" GridPane.columnIndex="2"/>
+                    <Button text="30 perc" onAction="#setTimer30Min"
+                            style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; -fx-background-radius: 8; -fx-cursor: hand;"
+                            maxWidth="Infinity" GridPane.columnIndex="3"/>
+                    <Button text="1 óra" onAction="#setTimer1Hour"
+                            style="-fx-font-size: 12px; -fx-padding: 8 15; -fx-background-color: #ecf0f1; -fx-text-fill: #2c3e50; -fx-background-radius: 8; -fx-cursor: hand;"
+                            maxWidth="Infinity" GridPane.columnIndex="4"/>
+
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="20" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="20" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="20" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="20" hgrow="ALWAYS"/>
+                        <ColumnConstraints percentWidth="20" hgrow="ALWAYS"/>
+                    </columnConstraints>
+                </GridPane>
+            </VBox>
+        </VBox>
+
+        <!-- Vezérlő gombok - RESZPONZÍV GridPane -->
+        <GridPane hgap="15" vgap="15" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+            <Button fx:id="startTimerButton" text="▶ Indítás" onAction="#handleStart"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 15 35; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;"
+                    maxWidth="Infinity" GridPane.columnIndex="0"/>
+            <Button fx:id="pauseTimerButton" text="⏸ Szünet" onAction="#handlePause"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 15 35; -fx-background-color: #f39c12; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;"
+                    maxWidth="Infinity" disable="true" GridPane.columnIndex="1"/>
+            <Button fx:id="resetTimerButton" text="⏹ Reset" onAction="#handleReset"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 15 35; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;"
+                    maxWidth="Infinity" disable="true" GridPane.columnIndex="2"/>
+
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+            </columnConstraints>
+        </GridPane>
+
+        <!-- Opciók -->
+        <VBox spacing="12" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 10, 0, 0, 3);">
+            <Label text="🔔 Opciók" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            <Separator/>
+            <CheckBox fx:id="soundCheckBox" text="Hang lejátszása lejáratkor"
+                      style="-fx-font-size: 13px;" selected="true"/>
+            <CheckBox fx:id="autoRestartCheckBox" text="Automatikus újraindítás lejárat után"
+                      style="-fx-font-size: 13px;"/>
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>

@@ -6,50 +6,106 @@
 
     <groupId>org.example</groupId>
     <artifactId>Digitalis-idomero</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Digitalis-idomero</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.10.2</junit.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <javafx.version>21</javafx.version>
     </properties>
 
     <dependencies>
+        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+            <classifier>win</classifier>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- SQLite JDBC driver - ÚJ! -->
+        <!-- SQLite -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.44.1.0</version>
         </dependency>
 
-        <!-- JNA (Windows API) - később kell majd -->
+        <!-- JNA -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.14.0</version>
+        </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>5.14.0</version>
+        </dependency>
+
+        <!-- Apache POI -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!-- Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.27.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.15.1</version>
+        </dependency>
+
+        <!-- XML -->
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>5.2.0</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.22.1</version>
         </dependency>
     </dependencies>
 
@@ -59,28 +115,67 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
-                <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
+                <configuration>
+                    <mainClass>org.example.digitalisidomero.Launcher</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Dependency Plugin - kimásolja az összes JAR-t -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
-                        <id>default-cli</id>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <mainClass>org.example.digitalisidomero/org.example.digitalisidomero.Main
-                            </mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
-                            <noManPages>true</noManPages>
-                            <stripDebug>true</stripDebug>
-                            <noHeaderFiles>true</noHeaderFiles>
+                            <outputDirectory>${project.build.directory}/jmods</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- FAT JAR PLUGIN -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.example.digitalisidomero.Main</mainClass>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <finalName>DigitalisIdomero</finalName>
                         </configuration>
                     </execution>
                 </executions>

@@ -1,14 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="org.example.digitalisidomero.ui.StatisticsController"
+            fitToWidth="true"
+            stylesheets="@statistics.css"
+            styleClass="scroll-pane">
 
-</AnchorPane>
+    <VBox styleClass="statistics-container">
+
+        <!-- Fejléc -->
+        <VBox spacing="8" styleClass="stats-header">
+            <Label text="📊 Statisztikák" styleClass="stats-title"/>
+            <Label fx:id="statusLabel" text="" styleClass="stats-status"/>
+        </VBox>
+
+        <!-- Dátumválasztó -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="date-picker-panel">
+            <Label text="📅" style="-fx-font-size: 18px;"/>
+            <DatePicker fx:id="datePicker" prefWidth="150"/>
+
+            <Separator orientation="VERTICAL"/>
+
+            <Button fx:id="todayButton" text="Ma" onAction="#handleToday" styleClass="date-button"/>
+            <Button fx:id="yesterdayButton" text="Tegnap" onAction="#handleYesterday" styleClass="date-button"/>
+            <Button fx:id="thisWeekButton" text="Ez a hét" onAction="#handleThisWeek" styleClass="date-button"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="🔄" onAction="#handleRefresh" styleClass="refresh-button" style="-fx-min-width: 40; -fx-pref-width: 40;"/>
+        </HBox>
+
+        <!-- Összesítő -->
+        <GridPane styleClass="summary-grid">
+            <VBox spacing="6" GridPane.columnIndex="0">
+                <Label text="Kiválasztott dátum" styleClass="summary-label"/>
+                <Label fx:id="selectedDateLabel" text="-" styleClass="summary-value"/>
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="1">
+                <Label text="Összes idő" styleClass="summary-label"/>
+                <Label fx:id="totalTimeLabel" text="0ó 0p" styleClass="summary-value, summary-value-primary"/>
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="2">
+                <Label text="Munkamenetek" styleClass="summary-label"/>
+                <Label fx:id="sessionCountLabel" text="-" styleClass="summary-value, summary-value-success"/>
+            </VBox>
+
+            <VBox spacing="6" GridPane.columnIndex="3">
+                <Label text="Átlag" styleClass="summary-label"/>
+                <Label fx:id="avgSessionLabel" text="-" styleClass="summary-value, summary-value-purple"/>
+            </VBox>
+
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+            </columnConstraints>
+        </GridPane>
+
+        <!-- Grafikonok -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+
+            <!-- Bal: Kördiagram -->
+            <VBox spacing="12" styleClass="chart-card" HBox.hgrow="ALWAYS" prefWidth="400">
+                <Label text="📊 Kategóriák" styleClass="chart-title"/>
+                <Separator/>
+                <PieChart fx:id="categoryPieChart" prefHeight="280" legendVisible="true" styleClass="chart"/>
+            </VBox>
+
+            <!-- Jobb: Heti diagram -->
+            <VBox spacing="12" styleClass="chart-card" HBox.hgrow="ALWAYS">
+                <Label text="📈 Heti áttekintés" styleClass="chart-title"/>
+                <Separator/>
+                <BarChart fx:id="weeklyBarChart" VBox.vgrow="ALWAYS" legendVisible="false" styleClass="chart" prefHeight="280">
+                    <xAxis>
+                        <CategoryAxis fx:id="weeklyXAxis" label=""/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="weeklyYAxis" label="Perc" side="LEFT"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+        </HBox>
+
+        <!-- Top alkalmazások -->
+        <VBox spacing="12" styleClass="chart-card">
+            <Label text="🏆 Top 10 alkalmazás" styleClass="chart-title"/>
+            <Separator/>
+            <ListView fx:id="topAppsListView" prefHeight="200" styleClass="top-apps-list"/>
+        </VBox>
+
+        <!-- Export panel - JAVÍTOTT -->
+        <VBox spacing="18" styleClass="export-panel">
+            <Label text="📤 Exportálás" styleClass="export-label" style="-fx-font-size: 16px;"/>
+
+            <GridPane hgap="20" vgap="15">
+
+                <!-- Napi riport -->
+                <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <Label text="📄 Napi riport" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;"/>
+                    <HBox spacing="10">
+                        <Button fx:id="exportDailyButton" text="CSV" onAction="#handleExportDaily"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                        <Button fx:id="exportDailyExcelButton" text="Excel" onAction="#handleExportDailyExcel"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Heti riport -->
+                <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <Label text="📅 Heti riport" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;"/>
+                    <HBox spacing="10">
+                        <Button fx:id="exportWeeklyButton" text="CSV" onAction="#handleExportWeekly"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                        <Button fx:id="exportWeeklyExcelButton" text="Excel" onAction="#handleExportWeeklyExcel"
+                                styleClass="export-button"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Teljes riport -->
+                <VBox spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <Label text="📊 Teljes riport" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;"/>
+                    <HBox spacing="10">
+                        <Button fx:id="exportFullReportButton" text="CSV" onAction="#handleExportFullReport"
+                                styleClass="export-button, export-button-full"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                        <Button fx:id="exportFullReportExcelButton" text="Excel" onAction="#handleExportFullReportExcel"
+                                styleClass="export-button, export-button-full"
+                                style="-fx-min-width: 100; -fx-pref-width: 100;"/>
+                    </HBox>
+                </VBox>
+
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                    <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                    <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS"/>
+                </columnConstraints>
+            </GridPane>
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>

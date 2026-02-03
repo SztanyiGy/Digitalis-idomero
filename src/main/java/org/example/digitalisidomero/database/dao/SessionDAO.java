@@ -1,6 +1,7 @@
 package org.example.digitalisidomero.database.dao;
 
 import org.example.digitalisidomero.database.DatabaseConnection;
+import org.example.digitalisidomero.model.Category;
 import org.example.digitalisidomero.model.Session;
 
 import java.sql.*;
@@ -15,9 +16,9 @@ public class SessionDAO {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    // Session mentése (INSERT)
+    // Session mentése (INSERT) - KATEGÓRIÁVAL
     public int save(Session session) {
-        String sql = "INSERT INTO sessions (application_id, start_time, end_time, duration_seconds, date) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO sessions (application_id, start_time, end_time, duration_seconds, date, category) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -27,6 +28,7 @@ public class SessionDAO {
             pstmt.setString(3, session.getEndTime() != null ? session.getEndTime().format(DATETIME_FORMATTER) : null);
             pstmt.setLong(4, session.getDurationSeconds());
             pstmt.setString(5, session.getStartTime().toLocalDate().format(DATE_FORMATTER));
+            pstmt.setString(6, session.getCategory() != null ? session.getCategory().name() : Category.OTHER.name());
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -37,7 +39,7 @@ public class SessionDAO {
                     if (rs.next()) {
                         int id = rs.getInt(1);
                         session.setId(id);
-                        System.out.println("✓ Session mentve (ID: " + id + ", Duration: " + session.getDurationSeconds() + "s)");
+                        System.out.println("✓ Session mentve (ID: " + id + ", Duration: " + session.getDurationSeconds() + "s, Category: " + session.getCategory() + ")");
                         return id;
                     }
                 }
@@ -52,14 +54,15 @@ public class SessionDAO {
 
     // Session frissítése (UPDATE) - pl. lezáráskor
     public boolean update(Session session) {
-        String sql = "UPDATE sessions SET end_time = ?, duration_seconds = ? WHERE id = ?";
+        String sql = "UPDATE sessions SET end_time = ?, duration_seconds = ?, category = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, session.getEndTime() != null ? session.getEndTime().format(DATETIME_FORMATTER) : null);
             pstmt.setLong(2, session.getDurationSeconds());
-            pstmt.setInt(3, session.getId());
+            pstmt.setString(3, session.getCategory() != null ? session.getCategory().name() : Category.OTHER.name());
+            pstmt.setInt(4, session.getId());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -203,7 +206,7 @@ public class SessionDAO {
         return false;
     }
 
-    // Segédfüggvény: Session objektum létrehozása ResultSet-ből
+    // Segédfüggvény: Session objektum létrehozása ResultSet-ből - KATEGÓRIÁVAL
     private Session extractSessionFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         int applicationId = rs.getInt("application_id");
@@ -216,6 +219,13 @@ public class SessionDAO {
 
         long durationSeconds = rs.getLong("duration_seconds");
 
-        return new Session(id, applicationId, startTime, endTime, durationSeconds);
+        // Kategória beolvasása
+        String categoryStr = rs.getString("category");
+        Category category = categoryStr != null ? Category.valueOf(categoryStr) : Category.OTHER;
+
+        Session session = new Session(id, applicationId, startTime, endTime, durationSeconds);
+        session.setCategory(category);
+
+        return session;
     }
 }

@@ -32,11 +32,24 @@ public class DatabaseInitializer {
                     end_time TEXT,
                     duration_seconds INTEGER DEFAULT 0,
                     date TEXT NOT NULL,
+                    category TEXT DEFAULT 'OTHER',
                     FOREIGN KEY (application_id) REFERENCES applications(id)
                 );
                 """;
             stmt.execute(createSessionsTable);
             System.out.println("✓ Sessions tábla létrehozva/ellenőrizve.");
+
+            // 2.1 Ha a tábla már létezik, add hozzá a category oszlopot (migration)
+            try {
+                String addCategoryColumn = "ALTER TABLE sessions ADD COLUMN category TEXT DEFAULT 'OTHER';";
+                stmt.execute(addCategoryColumn);
+                System.out.println("✓ Category oszlop hozzáadva a sessions táblához.");
+            } catch (SQLException e) {
+                // Az oszlop már létezik, ez rendben van
+                if (!e.getMessage().contains("duplicate column name")) {
+                    System.out.println("⚠ Category oszlop már létezik vagy más hiba: " + e.getMessage());
+                }
+            }
 
             // 3. Index létrehozása a gyorsabb lekérdezésekhez
             String createDateIndex = """
