@@ -185,7 +185,7 @@ public class MainController {
         if (!stopperViewLoaded) {
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/org/example/digitalisidomero/stopper-view.fxml")
+                        getClass().getResource("/org/example/digitalisidomero/timer-view.fxml")
                 );
                 Node stopperContent = loader.load();
                 stopperView.getChildren().add(stopperContent);
