@@ -46,7 +46,7 @@ public class ExportService {
 
                 if (app != null) {
                     writer.append(escapeCSV(app.getDisplayName())).append(",");
-                    writer.append(app.getCategory().getDisplayName()).append(",");
+                    writer.append(getCategoryDisplayName(session, app)).append(",");
                     writer.append(DateUtils.formatDateTime(session.getStartTime())).append(",");
                     writer.append(session.getEndTime() != null ? DateUtils.formatDateTime(session.getEndTime()) : "").append(",");
                     writer.append(String.valueOf(session.getDurationSeconds())).append(",");
@@ -135,7 +135,7 @@ public class ExportService {
 
                 writer.append(String.valueOf(rank++)).append(",");
                 writer.append(escapeCSV(app.getDisplayName())).append(",");
-                writer.append(app.getCategory().getDisplayName()).append(",");
+                writer.append(getCategoryDisplayName(null, app)).append(",");
                 writer.append(String.valueOf(seconds)).append(",");
                 writer.append(TimeFormatter.formatDuration(seconds)).append("\n");
             }
@@ -149,7 +149,7 @@ public class ExportService {
                 Application app = applicationDAO.findById(session.getApplicationId());
                 if (app != null) {
                     writer.append(escapeCSV(app.getDisplayName())).append(",");
-                    writer.append(app.getCategory().getDisplayName()).append(",");
+                    writer.append(getCategoryDisplayName(session, app)).append(",");
                     writer.append(DateUtils.formatDateTime(session.getStartTime())).append(",");
                     writer.append(session.getEndTime() != null ? DateUtils.formatDateTime(session.getEndTime()) : "").append(",");
                     writer.append(String.valueOf(session.getDurationSeconds())).append(",");
@@ -199,7 +199,7 @@ public class ExportService {
                 if (app != null) {
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(app.getDisplayName());
-                    row.createCell(1).setCellValue(app.getCategory().getDisplayName());
+                    row.createCell(1).setCellValue(getCategoryDisplayName(session, app));
                     row.createCell(2).setCellValue(DateUtils.formatDateTime(session.getStartTime()));
                     row.createCell(3).setCellValue(session.getEndTime() != null ? DateUtils.formatDateTime(session.getEndTime()) : "");
                     row.createCell(4).setCellValue(session.getDurationSeconds());
@@ -383,7 +383,7 @@ public class ExportService {
                 if (app != null) {
                     Row row = detailSheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(app.getDisplayName());
-                    row.createCell(1).setCellValue(app.getCategory().getDisplayName());
+                    row.createCell(1).setCellValue(getCategoryDisplayName(session, app));
                     row.createCell(2).setCellValue(DateUtils.formatDateTime(session.getStartTime()));
                     row.createCell(3).setCellValue(session.getEndTime() != null ? DateUtils.formatDateTime(session.getEndTime()) : "");
                     row.createCell(4).setCellValue(session.getDurationSeconds());
@@ -450,6 +450,21 @@ public class ExportService {
         CreationHelper createHelper = workbook.getCreationHelper();
         style.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-MM-dd HH:mm:ss"));
         return style;
+    }
+
+    /**
+     * Session szintű kategórianév feloldása exporthoz
+     */
+    private String getCategoryDisplayName(Session session, Application app) {
+        if (session != null && session.getCategory() != null) {
+            return session.getCategory().getDisplayName();
+        }
+
+        if (app != null && app.getCategory() != null) {
+            return app.getCategory().getDisplayName();
+        }
+
+        return Category.OTHER.getDisplayName();
     }
 
     /**
