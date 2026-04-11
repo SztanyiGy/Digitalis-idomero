@@ -34,11 +34,6 @@ public class CategoryService {
         DEFAULT_CATEGORIES.put("msedge.exe", Category.STUDY);
         DEFAULT_CATEGORIES.put("opera.exe", Category.STUDY);
 
-        // Közösségi média
-        DEFAULT_CATEGORIES.put("Discord.exe", Category.SOCIAL_MEDIA);
-        DEFAULT_CATEGORIES.put("Telegram.exe", Category.SOCIAL_MEDIA);
-        DEFAULT_CATEGORIES.put("WhatsApp.exe", Category.SOCIAL_MEDIA);
-        DEFAULT_CATEGORIES.put("Messenger.exe", Category.SOCIAL_MEDIA);
 
         // Szórakozás
         DEFAULT_CATEGORIES.put("spotify.exe", Category.ENTERTAINMENT);
@@ -143,7 +138,6 @@ public class CategoryService {
             case WORK -> "#3498db";        // Kék
             case STUDY -> "#2ecc71";       // Zöld
             case ENTERTAINMENT -> "#e74c3c"; // Piros
-            case SOCIAL_MEDIA -> "#9b59b6"; // Lila
             case OTHER -> "#95a5a6";       // Szürke
         };
     }
@@ -158,7 +152,6 @@ public class CategoryService {
             case WORK -> "💼";
             case STUDY -> "📚";
             case ENTERTAINMENT -> "🎮";
-            case SOCIAL_MEDIA -> "💬";
             case OTHER -> "📱";
         };
     }
