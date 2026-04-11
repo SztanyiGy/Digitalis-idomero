@@ -1,14 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="org.example.digitalisidomero.ui.SettingsController"
+            fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+            style="-fx-background-color: transparent; -fx-background: transparent;">
 
-</AnchorPane>
+    <VBox spacing="20" styleClass="responsive-container">
+        <padding>
+            <Insets top="30" bottom="30" left="40" right="40"/>
+        </padding>
+
+        <!-- Fejléc -->
+        <VBox spacing="8" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+            <Label text="⚙️ Beállítások" styleClass="card-header"/>
+            <Label text="Személyre szabás és preferenciák" styleClass="card-subtitle"/>
+        </VBox>
+
+        <!-- MEGJELENÉS -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="🎨" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Megjelenés" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Testreszabd az alkalmazás kinézetét" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Téma választás -->
+            <VBox spacing="12">
+                <Label text="Színséma" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+                <HBox spacing="12">
+                    <ToggleButton text="☀️ Világos" styleClass="theme-toggle" prefWidth="180" prefHeight="50" selected="true"/>
+                    <ToggleButton text="🌙 Sötét" styleClass="theme-toggle" prefWidth="180" prefHeight="50" disable="true"/>
+                    <ToggleButton text="🌈 Színes" styleClass="theme-toggle" prefWidth="180" prefHeight="50" disable="true"/>
+                </HBox>
+                <Label text="(Hamarosan - több téma elérhető lesz)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
+            </VBox>
+
+            <!-- Betűméret -->
+            <VBox spacing="12">
+                <Label text="Betűméret" style="-fx-font-size: 15px; -fx-font-weight: 600;"/>
+                <HBox spacing="12">
+                    <Button text="A-" styleClass="preset-button-small" prefWidth="80" disable="true"/>
+                    <Button text="A" styleClass="preset-button-small" prefWidth="80"/>
+                    <Button text="A+" styleClass="preset-button-small" prefWidth="80" disable="true"/>
+                </HBox>
+                <Label text="(Hamarosan)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- KATEGÓRIÁK -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="📂" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Kategóriák kezelése" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Hozz létre és kezelj egyedi kategóriákat" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <Label text="(Hamarosan - egyedi kategóriák létrehozása, szerkesztése, törlése)"
+                   style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+
+        <!-- ÉRTESÍTÉSEK -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="🔔" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Értesítések" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Állítsd be az értesítési preferenciáid" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <VBox spacing="12">
+                <CheckBox text="Napi összefoglaló értesítés" disable="true"/>
+                <CheckBox text="Hangjelzés időzítő lejáratakor" disable="true"/>
+                <CheckBox text="Figyelmeztető hosszú használat esetén" disable="true"/>
+                <Label text="(Hamarosan)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- ADATOK -->
+        <VBox spacing="18" styleClass="card">
+            <padding>
+                <Insets top="25" bottom="25" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="💾" style="-fx-font-size: 24px;"/>
+                <VBox spacing="2">
+                    <Label text="Adatkezelés" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                    <Label text="Exportálás és adattörlés" style="-fx-font-size: 13px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
+
+            <Separator/>
+
+            <VBox spacing="12">
+                <Button text="📊 Adatok exportálása" styleClass="preset-button" maxWidth="250" disable="true"/>
+                <Button text="🗑️ Adatok törlése" styleClass="preset-button" maxWidth="250" disable="true"/>
+                <Label text="(Hamarosan)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-style: italic;"/>
+            </VBox>
+
+        </VBox>
+
+        <!-- NÉVJEGY -->
+        <VBox spacing="15" styleClass="card" style="-fx-background-color: #f8fafc;">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="ℹ️" style="-fx-font-size: 20px;"/>
+                <VBox spacing="2">
+                    <Label text="Digitális Időmérő v1.0" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <Label text="Kövesse nyomon digitális eszközhasználatát" style="-fx-font-size: 12px; -fx-text-fill: #64748b;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+
+    </VBox>
+
+</ScrollPane>

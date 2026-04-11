@@ -1,6 +1,5 @@
 package org.example.digitalisidomero.service;
 
-import org.example.digitalisidomero.monitor.MonitorService;
 import org.example.digitalisidomero.model.Application;
 import org.example.digitalisidomero.model.Session;
 

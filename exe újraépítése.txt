@@ -1,0 +1,2 @@
+   mvn clean package
+jpackage --input target --name DigitalisIdomero --main-jar DigitalisIdomero.jar --main-class org.example.digitalisidomero.Launcher --type app-image --win-console
