@@ -8,7 +8,7 @@ import com.sun.jna.platform.win32.WinUser.LASTINPUTINFO;
 public class ActivityDetector {
 
     // Inaktivitási határidő (milliszekundumban) - alapértelmezett: 5 perc
-    private static final long DEFAULT_IDLE_THRESHOLD_MS = 5 * 60 * 1000; // 5 perc
+    private static final long DEFAULT_IDLE_THRESHOLD_MS = 5 * 60 * 1000; // 30 perc
     private long idleThresholdMs;
 
     public ActivityDetector() {

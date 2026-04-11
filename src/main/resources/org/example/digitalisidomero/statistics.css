@@ -1,0 +1,223 @@
+/* ===== STATISZTIKA SPECIFIKUS STÍLUSOK ===== */
+
+/* Főkonténer */
+.statistics-container {
+    -fx-spacing: 25;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Fejléc */
+.stats-header {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
+}
+
+.stats-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.stats-status {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+/* Dátumválasztó panel */
+.date-picker-panel {
+    -fx-background-color: white;
+    -fx-padding: 18;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
+    -fx-spacing: 12;
+}
+
+.date-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.date-button {
+    -fx-font-size: 13px;
+    -fx-padding: 10 20;
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-weight: 600;
+}
+
+.date-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.refresh-button {
+    -fx-font-size: 16px;
+    -fx-padding: 10 12;
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.refresh-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+/* Összesítő grid */
+.summary-grid {
+    -fx-background-color: white;
+    -fx-padding: 25;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
+    -fx-hgap: 30;
+    -fx-vgap: 15;
+}
+
+.summary-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-weight: 600;
+}
+
+.summary-value {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.summary-value-primary {
+    -fx-text-fill: #3498db;
+}
+
+.summary-value-success {
+    -fx-text-fill: #2ecc71;
+}
+
+.summary-value-purple {
+    -fx-text-fill: #9b59b6;
+}
+
+/* Grafikon kártyák */
+.chart-card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
+    -fx-spacing: 15;
+}
+
+.chart-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.chart {
+    -fx-padding: 10;
+}
+
+/* Lista */
+.top-apps-list {
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.top-apps-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 10 15;
+}
+
+.top-apps-list .list-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.top-apps-list .list-cell:selected {
+    -fx-background-color: #bbdefb;
+    -fx-text-fill: #1976d2;
+}
+
+/* Export panel - JAVÍTOTT */
+.export-panel {
+    -fx-background-color: white;
+    -fx-padding: 25;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.06), 10, 0, 0, 3);
+    -fx-spacing: 18;
+}
+
+.export-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.export-button {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 20;
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.export-button:hover {
+    -fx-background-color: #229954;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.export-button-full {
+    -fx-background-color: #16a085;
+}
+
+.export-button-full:hover {
+    -fx-background-color: #138d75;
+}
+
+/* ScrollPane javítás */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #bdc3c7;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+/* DatePicker stílus */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.date-picker .text-field {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+}
