@@ -59,14 +59,6 @@
                     </graphic>
                 </Button>
 
-                <Button fx:id="navSettingsButton" onAction="#showSettingsPage" styleClass="nav-button" maxWidth="Infinity">
-                    <graphic>
-                        <VBox alignment="CENTER" spacing="8">
-                            <Label text="⚙️" styleClass="nav-button-icon"/>
-                            <Label text="Beállítások" styleClass="nav-button-text"/>
-                        </VBox>
-                    </graphic>
-                </Button>
 
             </VBox>
 
@@ -210,43 +202,6 @@
             <!-- STOPPER VIEW -->
             <VBox fx:id="stopperView" visible="false" managed="false" style="-fx-background-color: transparent;"/>
 
-            <!-- BEÁLLÍTÁSOK VIEW -->
-            <VBox fx:id="settingsView" visible="false" managed="false" style="-fx-background-color: transparent;"/>
-            <ScrollPane fx:id="settingsViewScroll" visible="false" managed="false" fitToWidth="true"
-                        hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent;">
-                <VBox fx:id="settingsView" spacing="20" styleClass="responsive-container">
-                    <padding>
-                        <Insets top="30" bottom="30" left="40" right="40"/>
-                    </padding>
-
-                    <VBox spacing="8" styleClass="card">
-                        <padding>
-                            <Insets top="25" bottom="25" left="30" right="30"/>
-                        </padding>
-                        <Label text="⚙️ Beállítások" styleClass="card-header"/>
-                        <Label text="Személyre szabás és beállítások" styleClass="card-subtitle"/>
-                    </VBox>
-
-                    <VBox spacing="15" styleClass="card">
-                        <padding>
-                            <Insets top="25" bottom="25" left="30" right="30"/>
-                        </padding>
-                        <Label text="🎨 Megjelenés" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <Separator/>
-                        <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
-                    </VBox>
-
-                    <VBox spacing="15" styleClass="card">
-                        <padding>
-                            <Insets top="25" bottom="25" left="30" right="30"/>
-                        </padding>
-                        <Label text="🔔 Értesítések" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                        <Separator/>
-                        <Label text="(Hamarosan)" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
-                    </VBox>
-
-                </VBox>
-            </ScrollPane>
 
         </StackPane>
     </center>

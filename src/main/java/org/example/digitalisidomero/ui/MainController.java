@@ -28,14 +28,12 @@ public class MainController {
     @FXML private Button navHomeButton;
     @FXML private Button navStatsButton;
     @FXML private Button navStopperButton;
-    @FXML private Button navSettingsButton;
 
     // Nézetek
     @FXML private ScrollPane homeViewScroll;
     @FXML private VBox homeView;
     @FXML private VBox statisticsView;
     @FXML private VBox stopperView;
-    @FXML private VBox settingsView;
 
     @FXML private Label statusLabel;
     @FXML private Label currentAppLabel;
@@ -59,7 +57,6 @@ public class MainController {
 
     private boolean statisticsViewLoaded = false;
     private boolean stopperViewLoaded = false;
-    private boolean settingsViewLoaded = false;
 
     private ToggleGroup categoryToggleGroup;
     private Category selectedCategory = null;
@@ -111,8 +108,8 @@ public class MainController {
             selectedCategory = Category.WORK;
             System.out.println("DEBUG: Munka kategória kiválasztva");
         } else if (studyCategoryToggle.isSelected()) {
-            selectedCategory = Category.WORK; // Ha nincs külön STUDY kategóriád
-            System.out.println("DEBUG: Tanulás kategória kiválasztva (WORK-ként)");
+            selectedCategory = Category.STUDY; // Ha nincs külön STUDY kategóriád
+            System.out.println("DEBUG: Tanulás kategória kiválasztva");
         } else if (entertainmentCategoryToggle.isSelected()) {
             selectedCategory = Category.ENTERTAINMENT;
             System.out.println("DEBUG: Szórakozás kategória kiválasztva");
@@ -129,8 +126,6 @@ public class MainController {
         statisticsView.setManaged(false);
         stopperView.setVisible(false);
         stopperView.setManaged(false);
-        settingsView.setVisible(false);
-        settingsView.setManaged(false);
 
         // Aktív gomb kiemelése
         highlightNavButton(navHomeButton);
@@ -142,8 +137,6 @@ public class MainController {
         homeViewScroll.setManaged(false);
         stopperView.setVisible(false);
         stopperView.setManaged(false);
-        settingsView.setVisible(false);
-        settingsView.setManaged(false);
 
         // Statisztika nézet betöltése (csak egyszer)
         if (!statisticsViewLoaded) {
@@ -178,8 +171,7 @@ public class MainController {
         homeViewScroll.setManaged(false);
         statisticsView.setVisible(false);
         statisticsView.setManaged(false);
-        settingsView.setVisible(false);
-        settingsView.setManaged(false);
+
 
         // Stopper nézet betöltése (csak egyszer)
         if (!stopperViewLoaded) {
@@ -208,47 +200,12 @@ public class MainController {
         highlightNavButton(navStopperButton);
     }
 
-    @FXML
-    private void showSettingsPage() {
-        homeViewScroll.setVisible(false);
-        homeViewScroll.setManaged(false);
-        statisticsView.setVisible(false);
-        statisticsView.setManaged(false);
-        stopperView.setVisible(false);
-        stopperView.setManaged(false);
 
-        // Beállítások nézet betöltése (csak egyszer)
-        if (!settingsViewLoaded) {
-            try {
-                FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/org/example/digitalisidomero/settings-view.fxml")
-                );
-                Node settingsContent = loader.load();
-                settingsView.getChildren().add(settingsContent);
-                settingsViewLoaded = true;
-
-                System.out.println("✓ Beállítások nézet betöltve");
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("✗ Hiba a beállítások nézet betöltésekor: " + e.getMessage());
-
-                Label errorLabel = new Label("⚠️ Settings hiba: " + e.getMessage());
-                errorLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #e74c3c;");
-                settingsView.getChildren().add(errorLabel);
-            }
-        }
-
-        settingsView.setVisible(true);
-        settingsView.setManaged(true);
-
-        highlightNavButton(navSettingsButton);
-    }
 
     private void highlightNavButton(Button activeButton) {
         navHomeButton.getStyleClass().remove("nav-button-active");
         navStatsButton.getStyleClass().remove("nav-button-active");
         navStopperButton.getStyleClass().remove("nav-button-active");
-        navSettingsButton.getStyleClass().remove("nav-button-active");
 
         if (!activeButton.getStyleClass().contains("nav-button-active")) {
             activeButton.getStyleClass().add("nav-button-active");

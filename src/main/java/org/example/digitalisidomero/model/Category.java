@@ -4,8 +4,7 @@ public enum Category {
     WORK("Munka"),
     STUDY("Tanulás"),
     ENTERTAINMENT("Szórakozás"),
-    SOCIAL_MEDIA("Közösségi média"),
-    OTHER("Egyéb");
+        OTHER("Egyéb");
 
     private final String displayName;
 
